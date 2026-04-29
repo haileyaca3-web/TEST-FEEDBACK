@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TEST FEEDBACK</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+:root{
+  --primary:#4B44C8;--primary-light:#EEEDFE;--primary-mid:#7F77DD;--primary-dark:#2E2885;
+  --correct:#2D7A3A;--correct-bg:#EAF3DE;--wrong:#A32D2D;--wrong-bg:#FCEBEB;
+  --text:#1A1A2E;--text-sub:#6B6B8A;--text-hint:#A0A0BF;
+  --border:#E2E2F0;--bg:#F7F7FC;--card:#FFFFFF;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:#E8E8F0;color:var(--text)}
+.app{min-height:100vh;max-width:480px;margin:0 auto;background:var(--bg);position:relative;box-shadow:0 0 40px rgba(0,0,0,.12)}
+.screen{display:none}.screen.active{display:block}
+
+/* PC 레이아웃 */
+@media (min-width:768px) {
+  body{background:#E8E8F0}
+  .app{max-width:480px;margin:0 auto;box-shadow:0 4px 40px rgba(75,68,200,.12);min-height:100vh}
+  .bottom-bar{max-width:480px;left:50%;transform:translateX(-50%)}
+  .login-card{max-width:400px}
+}
+.topbar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:0.5px solid var(--border);padding:14px 16px 10px}
+.topbar-title{font-size:14px;font-weight:700;color:var(--primary);letter-spacing:.04em}
+.topbar-sub{font-size:11px;color:var(--text-hint);margin-top:2px}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px}
+.progress-fill{height:3px;background:var(--primary);border-radius:2px;transition:width .4s}
+.body{padding:16px;padding-bottom:100px}
+.stage-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);display:flex;align-items:center;gap:8px;margin-bottom:12px;margin-top:4px}
+.stage-label::after{content:'';flex:1;height:1px;background:#CECBF6}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.q-label{font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.6}
+.q-hint{font-size:11px;color:var(--text-hint);margin-top:-6px;margin-bottom:10px}
+input[type=text],input[type=password],input[type=date],input[type=number],select,textarea{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:'Noto Sans KR',sans-serif;color:var(--text);background:var(--card);outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;box-shadow:none}
+input:focus,select:focus,textarea:focus{border-color:var(--primary-mid)}
+input::placeholder,textarea::placeholder{color:var(--text-hint)}
+textarea{resize:none;line-height:1.7}
+.mb{margin-bottom:10px}
+.label-sm{font-size:11px;color:var(--text-sub);font-weight:500;margin-bottom:5px}
+.radio-row{display:flex;flex-direction:column;gap:6px}
+.radio-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;background:var(--card);transition:all .15s}
+.radio-opt:hover{background:var(--primary-light)}
+.radio-opt.selected{background:var(--primary-light);border-color:var(--primary-mid);color:var(--primary-dark);font-weight:500}
+.radio-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;transition:all .15s}
+.radio-opt.selected .radio-dot{background:var(--primary);border-color:var(--primary)}
+.chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{padding:12px 10px;text-align:center;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:13px;color:var(--text-sub);transition:all .15s;line-height:1.4}
+.chip:hover{background:var(--primary-light);color:var(--primary)}
+.chip.selected{background:#CECBF6;border-color:var(--primary);color:var(--primary-dark);font-weight:500}
+.type-table{width:100%;border-collapse:collapse}
+.type-table tr{border-bottom:0.5px solid var(--border)}
+.type-table tr:last-child{border-bottom:none}
+.type-cat{padding:10px 10px 10px 0;width:72px;vertical-align:middle}
+.type-cat-btn{width:100%;padding:10px 4px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--card);cursor:pointer;font-size:13px;font-weight:600;color:var(--text);text-align:center;line-height:1.4;transition:all .15s}
+.type-cat-btn:hover{background:var(--bg)}
+.type-cat-btn.cat-active{background:var(--primary-light);border-color:var(--primary-mid);color:var(--primary-dark)}
+.sub-cell{padding:10px 0;vertical-align:middle}
+.sub-chips{display:flex;flex-wrap:wrap;gap:7px}
+.sub-chip{padding:8px 14px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:13px;color:var(--text-sub);transition:all .15s;white-space:nowrap;font-weight:500}
+.sub-chip:hover{background:var(--primary-light);color:var(--primary);border-color:#AFA9EC}
+.sub-chip.selected{background:#CECBF6;border-color:var(--primary);color:var(--primary-dark);font-weight:600}
+.star-wrap{display:flex;align-items:center;gap:3px}
+.star{font-size:24px;cursor:pointer;color:#DDD;transition:color .1s;line-height:1;user-select:none}
+.star.on{color:#F5A623}
+.diff-label{font-size:11px;color:var(--text-hint);margin-left:4px}
+.oa-row{display:flex;gap:8px}
+.oa-btn{flex:1;padding:11px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--card);cursor:pointer;font-size:14px;font-weight:500;text-align:center;transition:all .15s;font-family:'Noto Sans KR',sans-serif}
+.oa-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.oa-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.q-header{margin-bottom:14px}
+.q-counter{font-size:12px;color:var(--text-hint);margin-bottom:2px}
+.q-num-row{display:flex;align-items:center;gap:10px}
+.q-num{font-size:22px;font-weight:700;color:var(--text)}
+.q-num-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--primary-light);border:0.5px solid #AFA9EC}
+.q-num-badge input{width:38px;border:none;background:transparent;font-size:15px;font-weight:600;color:var(--primary-dark);text-align:center;padding:0;outline:none}
+.q-num-badge span{font-size:12px;color:var(--primary);font-weight:500}
+.goal-wrap{display:grid;grid-template-columns:1fr 0.5px 1fr;gap:10px;align-items:start}
+.goal-half{display:flex;flex-direction:column;gap:6px}
+.goal-title{font-size:11px;color:var(--text-sub);font-weight:500}
+.score-input-box{display:flex;align-items:center;justify-content:center;gap:5px;padding:0 12px;border:0.5px solid #AFA9EC;border-radius:var(--radius-sm);background:var(--primary-light);height:48px}
+.score-input-box input{flex:1;border:none;background:transparent;font-size:20px;font-weight:600;color:var(--primary-dark);text-align:center;outline:none;min-width:0;padding:0}
+.score-input-box span{font-size:13px;color:var(--primary);font-weight:500;flex-shrink:0}
+.grade-select{border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-weight:500;color:var(--primary-dark);background:var(--card);width:100%;height:48px;text-align:center;cursor:pointer;padding:0 12px}
+.goal-badge{height:28px;display:flex;align-items:center;justify-content:center;padding:0 10px;background:var(--primary-light);border-radius:20px;font-size:11px;color:var(--primary);font-weight:500}
+.divider-v{background:var(--border);width:0.5px;margin-top:20px}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px 28px;background:var(--bg);border-top:0.5px solid var(--border);z-index:50}
+.btn-primary{width:100%;padding:14px;border-radius:var(--radius);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s}
+.btn-primary:disabled{opacity:.35;cursor:default}
+.btn-primary:not(:disabled):hover{opacity:.88}
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+.login-logo{font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--primary);margin-bottom:6px;text-transform:uppercase}
+.login-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:32px}
+.login-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;box-shadow:0 2px 16px rgba(75,68,200,.06)}
+.login-card input{margin-bottom:10px;height:52px}
+.login-btn{width:100%;height:52px;border-radius:var(--radius-sm);background:var(--text);color:#fff;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;margin-top:6px;transition:opacity .15s}
+.login-btn:hover{opacity:.85}
+.login-or{text-align:center;font-size:12px;color:var(--text-hint);margin:16px 0}
+.login-sec-btn{width:100%;height:52px;border-radius:var(--radius-sm);background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:14px;font-weight:500;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.login-sec-btn:hover{background:var(--bg)}
+.teacher-link{text-align:center;margin-top:16px;font-size:13px;color:var(--text-hint);cursor:pointer;padding:8px}
+.teacher-link:hover{color:var(--primary)}
+.waiting-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+.waiting-icon{font-size:52px;margin-bottom:16px}
+.waiting-title{font-size:20px;font-weight:700;margin-bottom:10px}
+.waiting-desc{font-size:14px;color:var(--text-hint);line-height:1.8}
+.waiting-back{margin-top:28px;font-size:13px;color:var(--text-hint);cursor:pointer;text-decoration:underline}
+.tab-row{display:flex;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:48px;z-index:99}
+.tab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:500;color:var(--text-hint);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700}
+.table-wrap{overflow-x:auto}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{padding:8px 10px;background:var(--primary-light);color:var(--primary-dark);font-weight:600;text-align:left;border-bottom:1px solid #CECBF6;white-space:nowrap}
+.data-table td{padding:9px 10px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg)}
+.badge-wrong-sm{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:var(--wrong-bg);color:var(--wrong)}
+.badge-ok-sm{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:var(--correct-bg);color:var(--correct)}
+.mini-stars{color:#F5A623;font-size:11px;letter-spacing:-1px}
+.approve-btn{padding:7px 16px;background:var(--primary);color:#fff;border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+.reject-btn{padding:7px 16px;background:var(--card);color:var(--wrong);border:1px solid var(--wrong);border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-left:4px}
+.badge-approved{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--correct-bg);color:var(--correct);border:0.5px solid #B8DFC0}
+.share-preview{background:#FEE500;border-radius:var(--radius);padding:16px;margin-bottom:10px}
+.share-preview-title{font-size:13px;font-weight:700;color:#3A1D1D;margin-bottom:8px}
+.share-preview-body{font-size:12px;color:#5A3D3D;line-height:1.9;white-space:pre-wrap}
+.copy-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:#FEE500;color:#3A1D1D;border:none;cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s}
+.copy-btn:hover{opacity:.85}
+.copy-done{background:var(--correct-bg)!important;color:var(--correct)!important}
+.tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;margin:2px}
+.tag-correct{background:var(--correct-bg);color:var(--correct)}
+.tag-wrong{background:var(--wrong-bg);color:var(--wrong)}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:12px}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--text-sub);font-weight:500}
+.history-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.history-card:hover{border-color:var(--primary-mid);background:var(--primary-light)}
+.graph-wrap{padding:16px;background:var(--bg);border-radius:var(--radius-sm)}
+.graph-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.graph-label{font-size:11px;color:var(--text-sub);width:80px;flex-shrink:0;text-align:right}
+.graph-bar-bg{flex:1;height:20px;background:var(--border);border-radius:4px;overflow:hidden}
+.graph-bar-fill{height:100%;border-radius:4px;background:var(--primary);transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.graph-bar-val{font-size:10px;color:#fff;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay" id="loading" style="display:none">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">잠시만 기다려주세요</div>
+</div>
+
+<div class="app">
+
+<!-- ══ 로그인 ══ -->
+<div id="s-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-logo">TEST FEEDBACK</div>
+    <div class="login-title">시험 분석 시스템</div>
+    <div class="login-card">
+      <input type="text" id="l-id" placeholder="아이디" class="mb">
+      <input type="password" id="l-pw" placeholder="비밀번호">
+      <button class="login-btn" onclick="doLogin()">로그인</button>
+      <div class="login-or">또는</div>
+      <button class="login-sec-btn" onclick="show('s-join')">회원가입</button>
+      <div class="teacher-link" onclick="show('s-teacher-login')">선생님</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 회원가입 ══ -->
+<div id="s-join" class="screen">
+  <div class="login-wrap">
+    <div class="login-logo">TEST FEEDBACK</div>
+    <div class="login-title">회원가입</div>
+    <div class="login-card">
+      <div class="label-sm">이름</div>
+      <input type="text" id="j-name" placeholder="홍길동" class="mb">
+      <div class="label-sm">학교명</div>
+      <input type="text" id="j-school" placeholder="순천XX고등학교" class="mb">
+      <div class="label-sm">학년</div>
+      <select id="j-grade" class="mb">
+        <option value="">선택해주세요</option>
+        <option>중학교 1학년</option><option>중학교 2학년</option><option>중학교 3학년</option>
+        <option>고등학교 1학년</option><option>고등학교 2학년</option><option>고등학교 3학년</option>
+      </select>
+      <div class="label-sm">아이디</div>
+      <input type="text" id="j-id" placeholder="영문+숫자 조합" class="mb">
+      <div class="label-sm">비밀번호</div>
+      <input type="password" id="j-pw" placeholder="비밀번호 설정" class="mb">
+      <input type="password" id="j-pw2" placeholder="비밀번호 확인" class="mb">
+      <button class="login-btn" onclick="doJoin()">가입 신청</button>
+      <div class="teacher-link" onclick="show('s-login')">← 로그인으로 돌아가기</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 승인 대기 ══ -->
+<div id="s-waiting" class="screen">
+  <div class="waiting-wrap">
+    <div class="waiting-icon">⏳</div>
+    <div class="waiting-title">승인 대기 중이에요</div>
+    <div class="waiting-desc">선생님이 계정을 확인하고 있어요.<br>승인되면 로그인할 수 있어요.</div>
+    <div class="waiting-back" onclick="show('s-login')">로그인 화면으로 돌아가기</div>
+  </div>
+</div>
+
+<!-- ══ 홈 (로그인 후) ══ -->
+<div id="s-home" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub" id="home-sub">안녕하세요!</div>
+  </div>
+  <div class="body">
+    <div class="card" style="padding:20px;text-align:center;background:linear-gradient(135deg,#4B44C8,#7F77DD);border:none;position:relative">
+      <div style="font-size:13px;color:rgba(255,255,255,.8);margin-bottom:4px" id="home-name"></div>
+      <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:4px" id="home-school"></div>
+      <div style="font-size:13px;color:rgba(255,255,255,.7)" id="home-grade"></div>
+      <button onclick="showProfileEdit()" style="position:absolute;top:10px;right:10px;padding:5px 12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.5);border-radius:20px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif">✏️ 수정</button>
+    </div>
+
+    <div id="profile-edit-panel" style="display:none">
+      <div class="card" style="border-color:var(--primary-mid);background:var(--primary-light)">
+        <div style="font-size:13px;font-weight:700;color:var(--primary-dark);margin-bottom:12px">프로필 수정</div>
+        <div class="label-sm">학교명</div>
+        <input type="text" id="edit-school" placeholder="학교명" class="mb">
+        <div class="label-sm">학년</div>
+        <select id="edit-grade" class="mb">
+          <option value="">선택</option>
+          <option>중학교 1학년</option><option>중학교 2학년</option><option>중학교 3학년</option>
+          <option>고등학교 1학년</option><option>고등학교 2학년</option><option>고등학교 3학년</option>
+        </select>
+        <div style="display:flex;gap:8px">
+          <button onclick="saveProfileEdit()" style="flex:1;padding:11px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">저장</button>
+          <button onclick="document.getElementById('profile-edit-panel').style.display='none'" style="flex:1;padding:11px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif">취소</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text-sub);margin:16px 0 8px">새 시험 분석 시작</div>
+    <div class="card" style="display:flex;align-items:center;gap:14px;cursor:pointer" onclick="show('s-info')">
+      <div style="width:44px;height:44px;background:var(--primary-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✏️</div>
+      <div>
+        <div style="font-size:14px;font-weight:600">시험 피드백 입력</div>
+        <div style="font-size:12px;color:var(--text-hint);margin-top:2px">시험 결과를 분석하고 피드백을 남겨요</div>
+      </div>
+      <div style="margin-left:auto;color:var(--text-hint);font-size:18px">›</div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text-sub);margin:16px 0 8px">우리 학교 내 위치</div>
+    <div id="rank-card">
+      <div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">불러오는 중...</div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text-sub);margin:16px 0 8px">나의 성장 기록</div>
+    <div id="history-list">
+      <div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">불러오는 중...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STEP1: 시험정보 ══ -->
+<div id="s-info" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub" id="info-sub">시험 정보 입력</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+  </div>
+  <div class="body">
+    <div class="card">
+      <div class="label-sm">학교명</div>
+      <input type="text" id="i-school" placeholder="순천XX고등학교" class="mb">
+      <div class="label-sm">학년</div>
+      <select id="i-grade" class="mb">
+        <option value="">선택</option>
+        <option>중학교 1학년</option><option>중학교 2학년</option><option>중학교 3학년</option>
+        <option>고등학교 1학년</option><option>고등학교 2학년</option><option>고등학교 3학년</option>
+      </select>
+      <div class="label-sm">시험 종류</div>
+      <select id="i-type" class="mb">
+        <option>1학기 중간고사</option><option>1학기 기말고사</option>
+        <option>2학기 중간고사</option><option>2학기 기말고사</option><option>모의고사</option>
+      </select>
+      <div class="label-sm">시험 날짜</div>
+      <input type="date" id="i-date" class="mb">
+      <div class="label-sm">시험 범위 <span style="font-weight:400;color:var(--text-hint)">(콤마로 구분해서 입력)</span></div>
+      <input type="text" id="i-range" placeholder="교과서3과, 교과서4과, 25.6모고, 26.3모고, 단어장" class="mb" oninput="previewRangeTags()">
+      <div id="range-tags-preview" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:-4px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <div style="flex:1"><div class="label-sm">객관식 문항 수</div><input type="number" id="i-obj" placeholder="28" min="0"></div>
+        <div style="flex:1"><div class="label-sm">주관식 문항 수</div><input type="number" id="i-subj" placeholder="7" min="0"></div>
+      </div>
+      <div style="height:0.5px;background:var(--border);margin:14px 0"></div>
+      <div style="font-size:12px;font-weight:600;color:var(--primary);margin-bottom:10px">📊 이번 시험 결과</div>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1">
+          <div class="label-sm">실제 받은 점수</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--primary-light);height:50px">
+            <input type="number" id="i-actual-score" placeholder="85" min="0" max="100" style="border:none;background:transparent;font-size:20px;font-weight:700;color:var(--primary-dark);text-align:center;padding:0;outline:none;width:100%">
+            <span style="font-size:13px;color:var(--primary);font-weight:500;flex-shrink:0">점</span>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="label-sm">등급</div>
+          <select id="i-actual-grade" style="height:50px;font-size:15px;font-weight:600;color:var(--primary-dark);background:var(--primary-light);border-color:#AFA9EC;text-align:center">
+            <option value="">선택</option>
+            <option>1등급</option><option>2등급</option><option>3등급</option>
+            <option>4등급</option><option>5등급</option><option>6등급</option><option>7등급</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar"><button class="btn-primary" onclick="goAnalysis()">다음 — 문항 분석 시작</button></div>
+</div>
+
+<!-- ══ STEP2: 문항분석 ══ -->
+<div id="s-analysis" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub" id="a-sub">객관식 1 / 28</div>
+    <div class="progress-bar"><div class="progress-fill" id="a-progress" style="width:40%"></div></div>
+  </div>
+  <div class="body">
+    <div class="q-header">
+      <div class="q-counter" id="a-counter">객관식 1 / 28</div>
+      <div class="q-num-row">
+        <div class="q-num" id="a-qnum">1번 문항</div>
+        <div class="q-num-badge">
+          <input type="number" id="a-score" placeholder="3" min="1" max="10" oninput="checkDone()">
+          <span>점</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:10px">
+      <div class="label-sm" style="margin-bottom:8px">출처 (시험 범위에서 선택)</div>
+      <div id="range-tag-btns" style="display:flex;flex-wrap:wrap;gap:7px"></div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="label-sm" style="margin-bottom:8px">난이도</div>
+      <div class="star-wrap">
+        <span class="star" onclick="setStar(1)">★</span><span class="star" onclick="setStar(2)">★</span>
+        <span class="star" onclick="setStar(3)">★</span><span class="star" onclick="setStar(4)">★</span>
+        <span class="star" onclick="setStar(5)">★</span>
+        <span class="diff-label" id="diff-label">선택해주세요</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label-sm" style="margin-bottom:10px">문제 유형 선택</div>
+      <table class="type-table">
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-중심내용" onclick="toggleCat('중심 내용')">중심<br>내용</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('중심 내용','주제')">주제</span>
+          <span class="sub-chip" onclick="selSub('중심 내용','요지')">요지</span>
+          <span class="sub-chip" onclick="selSub('중심 내용','제목')">제목</span>
+          <span class="sub-chip" onclick="selSub('중심 내용','요약')">요약</span>
+          <span class="sub-chip" onclick="selSub('중심 내용','문단 요약')">문단 요약</span>
+          <span class="sub-chip" onclick="selSub('중심 내용','함축 의미')">함축 의미</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-빈칸추론" onclick="toggleCat('빈칸 추론')">빈칸<br>추론</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('빈칸 추론','단일 빈칸')">단일 빈칸</span>
+          <span class="sub-chip" onclick="selSub('빈칸 추론','이중 빈칸')">이중 빈칸</span>
+          <span class="sub-chip" onclick="selSub('빈칸 추론','문장 완성')">문장 완성</span>
+          <span class="sub-chip" onclick="selSub('빈칸 추론','연결어 빈칸')">연결어 빈칸</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-글의흐름" onclick="toggleCat('글의 흐름')">글의<br>흐름</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('글의 흐름','문장 삽입')">문장 삽입</span>
+          <span class="sub-chip" onclick="selSub('글의 흐름','순서 배열')">순서 배열</span>
+          <span class="sub-chip" onclick="selSub('글의 흐름','무관한 문장')">무관한 문장</span>
+          <span class="sub-chip" onclick="selSub('글의 흐름','어조·분위기')">어조·분위기</span>
+          <span class="sub-chip" onclick="selSub('글의 흐름','연결어')">연결어</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-세부내용" onclick="toggleCat('세부 내용')">세부<br>내용</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('세부 내용','내용 일치')">내용 일치</span>
+          <span class="sub-chip" onclick="selSub('세부 내용','내용 불일치')">내용 불일치</span>
+          <span class="sub-chip" onclick="selSub('세부 내용','지칭 추론')">지칭 추론</span>
+          <span class="sub-chip" onclick="selSub('세부 내용','도표 이해')">도표 이해</span>
+          <span class="sub-chip" onclick="selSub('세부 내용','실용문 일치')">실용문 일치</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-어휘" onclick="toggleCat('어휘')">어휘</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('어휘','의미 추론')">의미 추론</span>
+          <span class="sub-chip" onclick="selSub('어휘','어휘 추론')">어휘 추론</span>
+          <span class="sub-chip" onclick="selSub('어휘','적절한/적절하지 않은 단어')">적절한/적절하지 않은 단어</span>
+          <span class="sub-chip" onclick="selSub('어휘','영영풀이')">영영풀이</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-어법" onclick="toggleCat('어법')">어법</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('어법','문법 오류')">문법 오류</span>
+          <span class="sub-chip" onclick="selSub('어법','문법 선택')">문법 선택</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-장문독해" onclick="toggleCat('장문 독해')">장문<br>독해</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('장문 독해','내용 이해')">내용 이해</span>
+          <span class="sub-chip" onclick="selSub('장문 독해','종합 문제')">종합 문제</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-목적주장" onclick="toggleCat('목적·주장')">목적<br>주장</button></td>
+        <td class="sub-cell"><div class="sub-chips">
+          <span class="sub-chip" onclick="selSub('목적·주장','글의 목적')">글의 목적</span>
+          <span class="sub-chip" onclick="selSub('목적·주장','필자의 주장')">필자의 주장</span>
+        </div></td></tr>
+        <tr><td class="type-cat"><button class="type-cat-btn" id="cat-기타" onclick="toggleCat('기타')">기타</button></td>
+        <td class="sub-cell">
+          <input type="text" id="other-input" placeholder="직접 입력" oninput="setOther(this.value)" style="display:none">
+          <span id="other-hint" style="font-size:11px;color:var(--text-hint)">기타 선택 후 입력</span>
+        </td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="label-sm" style="margin-bottom:8px">정답 여부</div>
+      <div class="oa-row">
+        <button class="oa-btn" id="btn-correct" onclick="selOA('correct')">정답</button>
+        <button class="oa-btn" id="btn-wrong" onclick="selOA('wrong')">오답</button>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" id="a-done-btn" onclick="completeQ()" disabled>완료 — 다음 문항</button>
+  </div>
+</div>
+
+<!-- ══ STEP2-5: 문항 검토 ══ -->
+<div id="s-review" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub">문항 검토 — 수정하려면 번호 클릭</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+  </div>
+  <div class="body">
+    <div class="card" style="background:var(--primary-light);border-color:#AFA9EC;cursor:pointer" onclick="show('s-info')">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:11px;color:var(--primary);font-weight:600;margin-bottom:4px">✏️ 시험 정보 수정하려면 여기 클릭</div>
+          <div id="review-info-summary" style="font-size:13px;color:var(--primary-dark);font-weight:500"></div>
+        </div>
+        <div style="font-size:18px;color:var(--primary-mid)">›</div>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:8px">객관식 문항</div>
+    <div id="review-list"></div>
+    <div style="font-size:12px;font-weight:600;color:var(--text-sub);margin:12px 0 8px" id="review-subj-title" style="display:none">주관식 문항</div>
+    <div id="review-subj-list"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" onclick="show('s-subj');buildSubjList()">다음 — 주관식 분석</button>
+  </div>
+</div>
+<div id="s-subj" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub">주관식 문항 분석</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+  </div>
+  <div class="body" id="subj-body"></div>
+  <div class="bottom-bar"><button class="btn-primary" onclick="show('s-feedback')">다음 — TEST FEEDBACK</button></div>
+</div>
+
+<!-- ══ STEP4: FEEDBACK ══ -->
+<div id="s-feedback" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub">5단계 피드백</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+  </div>
+  <div class="body">
+    <div class="stage-label">1단계 — 준비 과정</div>
+    <div class="card"><div class="q-label">시험 며칠 전부터 준비했나요?</div><div class="radio-row">
+      <div class="radio-opt" onclick="sel(this,'prep-days')"><div class="radio-dot"></div>1주일 이상</div>
+      <div class="radio-opt" onclick="sel(this,'prep-days')"><div class="radio-dot"></div>2주일 이상</div>
+      <div class="radio-opt" onclick="sel(this,'prep-days')"><div class="radio-dot"></div>3주일 이상</div>
+      <div class="radio-opt" onclick="sel(this,'prep-days')"><div class="radio-dot"></div>한 달 이상</div>
+    </div></div>
+    <div class="card"><div class="q-label">하루 평균 순수 공부 시간은?</div><div class="radio-row">
+      <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>1시간 이하</div>
+      <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>2시간</div>
+      <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>3시간</div>
+      <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>4시간 이상</div>
+    </div></div>
+    <div class="card"><div class="q-label">가장 많이 활용한 자료는? <span style="font-size:11px;color:var(--text-hint);font-weight:400">(복수 선택)</span></div>
+    <div class="chip-grid">
+      <div class="chip" onclick="toggleChip(this)">교과서·부교재</div><div class="chip" onclick="toggleChip(this)">학원 프린트</div>
+      <div class="chip" onclick="toggleChip(this)">이전 기출문제</div><div class="chip" onclick="toggleChip(this)">단어장·암기장</div>
+      <div class="chip" onclick="toggleChip(this)">문제집·모의고사</div><div class="chip" onclick="toggleChip(this)">인터넷 강의</div>
+    </div></div>
+    <div class="stage-label">2단계 — 시험장 경험</div>
+    <div class="card"><div class="q-label">시험을 볼 때 어떤 기분이었나요?</div><div class="radio-row">
+      <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>자신감 있었다</div>
+      <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>긴장됐지만 괜찮았다</div>
+      <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>모르는 문제가 많아 당황했다</div>
+      <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>너무 긴장해서 실력 발휘를 못했다</div>
+    </div></div>
+    <div class="card"><div class="q-label">가장 당황했던 순간이 있었나요?</div><div class="q-hint">없으면 "없음"이라고 써도 돼요</div><textarea style="height:52px" placeholder="예) 장문 독해에서 모르는 단어가 너무 많았다" id="fb-panic"></textarea></div>
+    <div class="card"><div class="q-label">시간은 충분했나요?</div><div class="radio-row">
+      <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>충분했다</div>
+      <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>보통이었다</div>
+      <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>조금 부족했다</div>
+      <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>많이 부족했다</div>
+    </div></div>
+    <div class="stage-label">3단계 — 결과 해석</div>
+    <div class="card"><div class="q-label">예상보다 잘 된 부분은?</div><div class="q-hint">없으면 "없음"이라고 써도 돼요</div><textarea style="height:52px" placeholder="예) 어법 문제가 생각보다 잘 풀렸다" id="fb-good"></textarea></div>
+    <div class="card"><div class="q-label">예상보다 못한 부분은?</div><textarea style="height:52px" placeholder="예) 빈칸 추론에서 헷갈리는 게 많았다" id="fb-bad"></textarea></div>
+    <div class="card"><div class="q-label">틀린 문제들, 어떤 경우가 더 많았나요?</div><div class="radio-row">
+      <div class="radio-opt" onclick="sel(this,'wrong-type')"><div class="radio-dot"></div>알고 있었는데 실수로 틀린 게 더 많다</div>
+      <div class="radio-opt" onclick="sel(this,'wrong-type')"><div class="radio-dot"></div>몰라서 틀린 게 더 많다</div>
+      <div class="radio-opt" onclick="sel(this,'wrong-type')"><div class="radio-dot"></div>반반이다</div>
+    </div></div>
+    <div class="stage-label">4단계 — 원인 분석</div>
+    <div class="card"><div class="q-label">이번 시험에서 가장 아쉬운 점은?</div><textarea style="height:52px" placeholder="예) 단어를 좀 더 외웠어야 했는데" id="fb-regret"></textarea></div>
+    <div class="card"><div class="q-label">효과가 있었던 공부 방법은?</div><textarea style="height:52px" placeholder="예) 학원 프린트를 3번 반복한 게 도움됐다" id="fb-method"></textarea></div>
+    <div class="card"><div class="q-label">학원 수업이 이번 시험에 얼마나 도움됐나요?</div><div class="radio-row">
+      <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>매우 도움됐다</div>
+      <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>도움됐다</div>
+      <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>보통이었다</div>
+      <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>별로 도움이 안 됐다</div>
+    </div></div>
+    <div class="stage-label">5단계 — 나에게, 그리고 다음 목표</div>
+    <div class="card"><div class="q-label">나 자신에게 하고 싶은 말</div><div class="q-hint">잘한 점, 아쉬운 점, 다짐 — 솔직하게 써봐요</div><textarea style="height:90px" placeholder="예) 이번엔 준비가 부족했지만 다음엔 꼭 2주 전부터 시작하자." id="fb-self"></textarea></div>
+    <div class="card"><div class="q-label">선생님께 부탁드리고 싶은 것</div><div class="q-hint">수업, 자료, 관리 방식 뭐든 편하게 써요</div><textarea style="height:70px" placeholder="예) 빈칸 추론 집중 풀이를 더 해주셨으면 좋겠어요" id="fb-teacher"></textarea></div>
+    <div class="card"><div class="q-label">다음 시험 목표</div>
+      <div class="goal-wrap">
+        <div class="goal-half"><div class="goal-title">점수 목표</div>
+          <div class="score-input-box"><input type="number" id="goal-score" placeholder="85" min="0" max="100" oninput="updateGoal()"><span>점</span></div>
+          <div class="goal-badge" id="score-badge">&nbsp;</div>
+        </div>
+        <div class="divider-v"></div>
+        <div class="goal-half"><div class="goal-title">등급 목표</div>
+          <select class="grade-select" id="goal-grade" onchange="updateGoal()">
+            <option value="">등급 선택</option>
+            <option>1등급</option><option>2등급</option><option>3등급</option><option>4등급</option><option>5등급</option>
+          </select>
+          <div class="goal-badge" id="grade-badge">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar"><button class="btn-primary" onclick="submitAll()">제출 완료</button></div>
+</div>
+
+<!-- ══ STEP5: 완료 ══ -->
+<div id="s-done" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">TEST FEEDBACK</div>
+    <div class="topbar-sub">제출 완료</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  </div>
+  <div class="body">
+    <div id="save-status"></div>
+    <div class="card" style="text-align:center;padding:28px 16px">
+      <div style="font-size:40px;margin-bottom:10px">✅</div>
+      <div style="font-size:17px;font-weight:700;margin-bottom:6px">분석 완료!</div>
+      <div style="font-size:13px;color:var(--text-hint)">수고했어요!</div>
+    </div>
+    <div class="card" id="result-summary"></div>
+    <div style="margin-top:16px">
+      <div style="font-size:12px;color:var(--text-sub);font-weight:600;margin-bottom:8px">📤 학부모 카톡 공유용</div>
+      <div id="kakao-box"></div>
+      <button class="copy-btn" id="copy-btn" onclick="copyKakao()">카카오톡 복사하기</button>
+    </div>
+    <button class="btn-primary" style="margin-top:12px;background:var(--bg);color:var(--primary);border:1px solid var(--primary)" onclick="goHome()">홈으로 돌아가기</button>
+  </div>
+</div>
+
+<!-- ══ 선생님 로그인 ══ -->
+<div id="s-teacher-login" class="screen">
+  <div class="login-wrap">
+    <div class="login-logo">TEACHER</div>
+    <div class="login-title">선생님 로그인</div>
+    <div class="login-card">
+      <input type="text" id="t-id" placeholder="아이디" class="mb">
+      <input type="password" id="t-pw" placeholder="비밀번호">
+      <button class="login-btn" onclick="doTeacherLogin()" style="margin-top:10px">로그인</button>
+      <div class="teacher-link" onclick="show('s-login')">← 학생 로그인으로</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 선생님 대시보드 ══ -->
+<div id="s-teacher" class="screen">
+  <div class="topbar">
+    <div class="topbar-title">선생님 대시보드</div>
+    <div class="topbar-sub">학원 관리</div>
+  </div>
+  <div class="tab-row">
+    <div class="tab active" id="tab-approve" onclick="switchTab('approve')">승인 대기 <span id="pending-count"></span></div>
+    <div class="tab" id="tab-analysis" onclick="switchTab('analysis')">문항 분석</div>
+    <div class="tab" id="tab-students" onclick="switchTab('students')">학생 관리</div>
+  </div>
+  <div class="body" id="teacher-body"></div>
+</div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// ★ 여기에 Apps Script 배포 URL을 입력하세요
+// ══════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyolz5opfmZ16DDB64IqjZ_Su9OyMSN2BjFN3JjglXMcl15kfwQqlpmEGX64S8BgDI2/exec';
+
+const TEACHER_ID = 'teacher';
+const TEACHER_PW = 'admin1234';
+const diffLabels = ['','쉬움','보통 이하','보통','어려움','매우 어려움'];
+const catKey = t => t.replace(/[\s·]/g,'');
+
+const st = {
+  user: null,
+  info: {},
+  answers: [],
+  curQ: 1, isSubj: false,
+  objTotal: 5, subjTotal: 2,
+  selType: null, selSub: null, selOA: null, selStar: 0,
+  selRange: null
+};
+
+// ── 로딩 ──
+function loading(show, text='잠시만 기다려주세요') {
+  const el = document.getElementById('loading');
+  el.style.display = show ? 'flex' : 'none';
+  document.getElementById('loading-text').textContent = text;
+}
+
+// ── API 호출 (JSONP 방식 - CORS 완전 우회) ──
+function api(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + Date.now();
+    const url = SCRIPT_URL + '?' + new URLSearchParams({...params, callback: cbName}).toString();
+    const script = document.createElement('script');
+    const timer = setTimeout(() => {
+      delete window[cbName];
+      document.body.removeChild(script);
+      reject(new Error('timeout'));
+    }, 15000);
+    window[cbName] = (data) => {
+      clearTimeout(timer);
+      delete window[cbName];
+      document.body.removeChild(script);
+      resolve(data);
+    };
+    script.src = url;
+    script.onerror = () => {
+      clearTimeout(timer);
+      delete window[cbName];
+      document.body.removeChild(script);
+      reject(new Error('script error'));
+    };
+    document.body.appendChild(script);
+  });
+}
+
+// ── 화면 전환 ──
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── 로그인 ──
+async function doLogin() {
+  const id = document.getElementById('l-id').value.trim();
+  const pw = document.getElementById('l-pw').value.trim();
+  if (!id || !pw) { alert('아이디와 비밀번호를 입력해주세요'); return; }
+  loading(true, '로그인 중...');
+  try {
+    const res = await api({ action: 'login', id, pw });
+    if (res.status === 'pending') { show('s-waiting'); return; }
+    if (res.status === 'rejected') { alert('계정이 거절됐어요. 선생님께 문의해주세요'); return; }
+    if (!res.success) { alert(res.message || '로그인 실패'); return; }
+    st.user = res.user;
+    document.getElementById('home-sub').textContent = res.user.name + ' 학생';
+    document.getElementById('home-name').textContent = res.user.name + ' 학생';
+    document.getElementById('home-school').textContent = res.user.school;
+    document.getElementById('home-grade').textContent = res.user.grade;
+    document.getElementById('info-sub').textContent = res.user.name + ' 학생';
+    document.getElementById('i-school').value = res.user.school;
+    document.getElementById('i-grade').value = res.user.grade;
+    show('s-home');
+    loadHistory();
+    // 임시저장 데이터 확인
+    setTimeout(async () => {
+      const draft = localStorage.getItem('tf_draft_' + res.user.id);
+      if(draft) {
+        const ok = confirm('⚠️ 저번에 저장 못한 데이터가 있어요!\n지금 시트에 다시 저장할까요?');
+        if(ok) {
+          loading(true, '임시 데이터 저장 중...');
+          try {
+            await api({ action: 'submit', data: draft });
+            localStorage.removeItem('tf_draft_' + res.user.id);
+            alert('✅ 저장 완료!');
+            loadHistory();
+          } catch(e) { alert('저장 실패. 나중에 다시 시도해주세요.'); }
+          finally { loading(false); }
+        }
+      }
+    }, 500);
+  } catch(e) { alert('연결 오류가 발생했어요. 잠시 후 다시 시도해주세요.'); }
+  finally { loading(false); }
+}
+
+// ── 회원가입 ──
+async function doJoin() {
+  const name = document.getElementById('j-name').value.trim();
+  const school = document.getElementById('j-school').value.trim();
+  const grade = document.getElementById('j-grade').value;
+  const id = document.getElementById('j-id').value.trim();
+  const pw = document.getElementById('j-pw').value;
+  const pw2 = document.getElementById('j-pw2').value;
+  if (!name||!school||!grade||!id||!pw) { alert('모든 항목을 입력해주세요'); return; }
+  if (pw !== pw2) { alert('비밀번호가 일치하지 않아요'); return; }
+  loading(true, '가입 신청 중...');
+  try {
+    const res = await api({ action: 'join', name, school, grade, id, pw });
+    if (res.success) { alert(res.message); show('s-waiting'); }
+    else alert(res.message);
+  } catch(e) { alert('연결 오류가 발생했어요.'); }
+  finally { loading(false); }
+}
+
+// ── 내 기록 + 학교 내 위치 불러오기 ──
+async function loadHistory() {
+  const histDiv = document.getElementById('history-list');
+  const rankDiv = document.getElementById('rank-card');
+  try {
+    const res = await api({ action: 'getMyResults', userId: st.user.id });
+    if (!res.success || !res.results.length) {
+      histDiv.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">아직 제출한 시험이 없어요<br>첫 번째 시험을 분석해봐요! 📝</div>';
+      rankDiv.innerHTML = '<div class="card" style="text-align:center;padding:20px;color:var(--text-hint);font-size:13px">시험을 제출하면 학교 내 위치가 표시돼요</div>';
+      return;
+    }
+
+    const sorted = res.results.sort((a,b) => new Date(a.submitDate) - new Date(b.submitDate));
+
+    // ── 학교 내 랭킹 ──
+    try {
+      const rankRes = await api({ action: 'getSchoolRank', userId: st.user.id, school: st.user.school, tid: TEACHER_ID, tpw: TEACHER_PW });
+      if (rankRes.success && rankRes.total >= 2) {
+        const r = rankRes;
+        const pct = Math.round((r.rank / r.total) * 100);
+        const pctLabel = pct <= 10 ? '🏆 상위 10%' : pct <= 30 ? '🥈 상위 30%' : pct <= 50 ? '상위 50%' : '평균 이하';
+        const color = pct <= 10 ? '#F5A623' : pct <= 30 ? '#4B44C8' : pct <= 50 ? '#2D7A3A' : '#6B6B8A';
+        rankDiv.innerHTML = `<div class="card" style="overflow:hidden">
+          <div style="font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:12px">📊 ${r.examType} 기준 · ${st.user.school}</div>
+          <div style="display:flex;align-items:center;gap:16px">
+            <div style="text-align:center;flex-shrink:0">
+              <div style="font-size:36px;font-weight:700;color:${color}">${r.rank}</div>
+              <div style="font-size:11px;color:var(--text-hint)">/ ${r.total}명</div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px">${pctLabel}</div>
+              <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${100-pct}%;background:${color};border-radius:4px;transition:width .8s"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text-hint)">
+                <span>내 점수 <b style="color:var(--text)">${r.myScore}점</b></span>
+                <span>학교 평균 <b style="color:var(--text)">${r.avg}점</b></span>
+              </div>
+              ${r.myScore > r.avg
+                ? `<div style="margin-top:6px;font-size:12px;color:var(--correct)">평균보다 ${r.myScore - r.avg}점 높아요 👍</div>`
+                : `<div style="margin-top:6px;font-size:12px;color:var(--text-hint)">평균보다 ${r.avg - r.myScore}점 낮아요 — 다음엔 더 잘할 수 있어요!</div>`
+              }
+            </div>
+          </div>
+        </div>`;
+      } else {
+        rankDiv.innerHTML = `<div class="card" style="text-align:center;padding:20px">
+          <div style="font-size:13px;color:var(--text-hint)">같은 학교 학생이 2명 이상 제출하면<br>학교 내 순위가 표시돼요 📊</div>
+        </div>`;
+      }
+    } catch(e) {
+      rankDiv.innerHTML = `<div class="card" style="text-align:center;padding:20px;font-size:13px;color:var(--text-hint)">순위 정보를 불러올 수 없어요</div>`;
+    }
+
+    // ── 성장 그래프 ──
+    let html = '';
+    if (sorted.length >= 2) {
+      const recent = sorted.filter(r => r.actualScore).slice(-5);
+      if (recent.length >= 2) {
+        const scores = recent.map(r => parseInt(r.actualScore));
+        const maxScore = Math.max(...scores);
+        html += `<div class="card"><div style="font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:10px">📈 점수 변화 추이</div><div class="graph-wrap">`;
+        recent.forEach(r => {
+          const pct = maxScore > 0 ? Math.round((parseInt(r.actualScore) / maxScore) * 100) : 0;
+          html += `<div class="graph-bar-row">
+            <div class="graph-label">${r.examType.replace('고사','').replace('학기','')}</div>
+            <div class="graph-bar-bg"><div class="graph-bar-fill" style="width:${pct}%"><span class="graph-bar-val">${r.actualScore}점</span></div></div>
+          </div>`;
+        });
+        html += '</div></div>';
+      }
+    }
+
+    // ── 기록 카드 ──
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:8px">📋 시험 기록</div>';
+    [...sorted].reverse().forEach(r => {
+      html += `<div class="history-card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:14px;font-weight:600">${r.examType}</div>
+            <div style="font-size:12px;color:var(--text-hint);margin-top:3px">${r.examDate||''} · 오답 ${r.wrongCount}개 (${r.wrongScore}점 감점)</div>
+            ${r.actualScore ? `<div style="font-size:13px;font-weight:700;color:var(--primary);margin-top:4px">${r.actualScore}점 ${r.actualGrade ? '· '+r.actualGrade : ''}</div>` : ''}
+            ${r.goalScore ? `<div style="font-size:11px;color:var(--text-hint);margin-top:2px">🎯 목표 ${r.goalScore}점 ${r.goalGrade||''}</div>` : ''}
+          </div>
+          <div style="font-size:24px">›</div>
+        </div>
+      </div>`;
+    });
+    histDiv.innerHTML = html;
+  } catch(e) {
+    histDiv.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">기록을 불러올 수 없어요</div>';
+    rankDiv.innerHTML = '<div class="card" style="text-align:center;padding:20px;font-size:13px;color:var(--text-hint)">순위 정보를 불러올 수 없어요</div>';
+  }
+}
+
+function goHome() { show('s-home'); loadHistory(); }
+
+// ── 선생님 로그인 ──
+async function doTeacherLogin() {
+  const id = document.getElementById('t-id').value.trim();
+  const pw = document.getElementById('t-pw').value.trim();
+  if (id === TEACHER_ID && pw === TEACHER_PW) {
+    show('s-teacher');
+    switchTab('approve');
+  } else {
+    alert('선생님 계정 정보가 틀렸어요');
+  }
+}
+
+// ── 선생님 탭 ──
+async function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const body = document.getElementById('teacher-body');
+  body.innerHTML = '<div style="padding:32px;text-align:center"><div class="loading-spinner" style="margin:0 auto"></div></div>';
+  if (tab === 'approve') await buildApproveTab(body);
+  else if (tab === 'analysis') await buildAnalysisTab(body);
+  else await buildStudentsTab(body);
+}
+
+async function buildApproveTab(body) {
+  try {
+    const res = await api({ action: 'getPending', tid: TEACHER_ID, tpw: TEACHER_PW });
+    const pending = res.pending || [];
+    const count = pending.length;
+    document.getElementById('pending-count').textContent = count > 0 ? `(${count})` : '';
+    if (!count) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:14px;color:var(--text-hint)">✅ 승인 대기 중인 학생이 없어요</div>'; return; }
+    let html = `<div style="font-size:12px;color:var(--text-hint);margin-bottom:10px">총 ${count}명 대기 중</div>`;
+    pending.forEach(u => {
+      html += `<div class="card">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:140px">
+            <div style="font-size:15px;font-weight:700">${u.name}</div>
+            <div style="font-size:12px;color:var(--text-hint);margin-top:3px">${u.school} · ${u.grade}</div>
+            <div style="font-size:11px;color:var(--text-hint);margin-top:2px">아이디: ${u.id} · ${u.joinDate||''}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="approve-btn" onclick="approveUser('${u.id}',true)">✅ 승인</button>
+            <button class="reject-btn" onclick="approveUser('${u.id}',false)">❌ 거절</button>
+          </div>
+        </div>
+      </div>`;
+    });
+    body.innerHTML = html;
+  } catch(e) { body.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">불러오기 실패</div>'; }
+}
+
+async function approveUser(userId, approve) {
+  loading(true, approve ? '승인 중...' : '거절 중...');
+  try {
+    const res = await api({ action: 'approve', tid: TEACHER_ID, tpw: TEACHER_PW, userId, approve: String(approve) });
+    if (res.success) { alert(approve ? '승인했어요!' : '거절했어요.'); switchTab('approve'); }
+    else alert(res.message);
+  } catch(e) { alert('오류가 발생했어요'); }
+  finally { loading(false); }
+}
+
+async function buildAnalysisTab(body) {
+  try {
+    const res = await api({ action: 'getSchoolAnalysis', tid: TEACHER_ID, tpw: TEACHER_PW });
+    const schools = res.schools || {};
+    if (!Object.keys(schools).length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:14px;color:var(--text-hint)">아직 제출된 데이터가 없어요</div>'; return; }
+    let html = '';
+    Object.entries(schools).forEach(([key, data]) => {
+      html += `<div style="margin-bottom:20px">
+        <div class="stage-label">${data.school} — ${data.examType} (${data.studentCount}명)</div>
+        <div class="card" style="padding:0;overflow:hidden"><div class="table-wrap">
+          <table class="data-table"><thead><tr>
+            <th>번호</th><th>유형</th><th>난이도</th><th>오답</th><th>상태</th>
+          </tr></thead><tbody>`;
+      Object.entries(data.qMap).sort((a,b) => parseInt(a[0]) - parseInt(b[0])).forEach(([q, d]) => {
+        const avg = d.stars.length ? Math.round(d.stars.reduce((a,b)=>a+b,0)/d.stars.length) : 0;
+        const rate = Math.round((d.wrongs/d.total)*100);
+        html += `<tr>
+          <td style="font-weight:700">${q}번</td>
+          <td>${d.type||'-'}</td>
+          <td><span class="mini-stars">${'★'.repeat(avg)+'☆'.repeat(5-avg)}</span></td>
+          <td>${d.wrongs}/${d.total}명</td>
+          <td>${rate>=50?`<span class="badge-wrong-sm">취약 ${rate}%</span>`:`<span class="badge-ok-sm">${rate}%</span>`}</td>
+        </tr>`;
+      });
+      html += '</tbody></table></div></div></div>';
+    });
+    body.innerHTML = html;
+  } catch(e) { body.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">불러오기 실패</div>'; }
+}
+
+async function buildStudentsTab(body) {
+  try {
+    const res = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
+    const students = res.students || [];
+    if (!students.length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:14px;color:var(--text-hint)">승인된 학생이 없어요</div>'; return; }
+    const bySchool = {};
+    students.forEach(s => { if (!bySchool[s.school]) bySchool[s.school] = []; bySchool[s.school].push(s); });
+    let html = '';
+    Object.entries(bySchool).forEach(([school, list]) => {
+      html += `<div class="stage-label">${school}</div>`;
+      list.forEach(s => {
+        const r = s.latestResult;
+        html += `<div class="card" style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700">${s.name}</div>
+            <div style="font-size:12px;color:var(--text-hint);margin-top:3px">${s.grade}</div>
+            ${r ? `<div style="font-size:11px;color:var(--text-hint);margin-top:2px">최근 ${r.examType} · 오답 ${r.wrongCount}개</div>` : '<div style="font-size:11px;color:var(--text-hint);margin-top:2px">미제출</div>'}
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            ${r ? `<button onclick="copyStudentKakao('${s.id}')" style="padding:7px 14px;background:#FEE500;border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">카톡 복사</button>` : ''}
+            <span class="badge-approved">승인됨</span>
+          </div>
+        </div>`;
+      });
+    });
+    body.innerHTML = html;
+    // 학생 데이터 임시 저장
+    window._studentData = students;
+  } catch(e) { body.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">불러오기 실패</div>'; }
+}
+
+function copyStudentKakao(userId) {
+  const s = (window._studentData||[]).find(s => s.id === userId);
+  if (!s || !s.latestResult) return;
+  const r = s.latestResult;
+  const text = `📋 ${s.school} TEST FEEDBACK\n\n✏️ ${r.examType}${r.submitDate?' ('+r.submitDate+')':''}\n👤 ${s.name} (${s.grade})\n\n✅ 정답: ${r.correctCount}개\n❌ 오답: ${r.wrongCount}개 (${r.wrongScore}점 감점)\n\n🎯 다음 목표: ${r.goalScore?r.goalScore+'점':''}${r.goalScore&&r.goalGrade?' / ':''}${r.goalGrade||''}`;
+  navigator.clipboard.writeText(text).then(() => alert(`${s.name} 결과가 복사됐어요!`));
+}
+
+// ── 시험범위 태그 미리보기 ──
+function previewRangeTags() {
+  const val = document.getElementById('i-range').value;
+  const tags = val.split(',').map(t => t.trim()).filter(t => t);
+  const div = document.getElementById('range-tags-preview');
+  div.innerHTML = tags.map(t =>
+    `<span style="display:inline-block;padding:5px 12px;background:var(--primary-light);border:0.5px solid #AFA9EC;border-radius:20px;font-size:12px;color:var(--primary-dark);font-weight:500">${t}</span>`
+  ).join('');
+}
+
+// ── 문항 출처 태그 버튼 생성 ──
+function buildRangeTagBtns() {
+  const val = document.getElementById('i-range').value;
+  const tags = val.split(',').map(t => t.trim()).filter(t => t);
+  const div = document.getElementById('range-tag-btns');
+  if (!tags.length) {
+    div.innerHTML = '<span style="font-size:12px;color:var(--text-hint)">시험정보에서 범위를 입력하면 여기에 표시돼요</span>';
+    return;
+  }
+  div.innerHTML = tags.map(t =>
+    `<button class="range-tag-btn" onclick="selectRangeTag(this,'${t}')"
+      style="padding:8px 14px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-sub);transition:all .15s;font-family:'Noto Sans KR',sans-serif"
+    >${t}</button>`
+  ).join('');
+}
+
+function selectRangeTag(el, tag) {
+  document.querySelectorAll('.range-tag-btn').forEach(b => {
+    b.style.background = 'var(--bg)';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--text-sub)';
+  });
+  el.style.background = '#CECBF6';
+  el.style.borderColor = 'var(--primary)';
+  el.style.color = 'var(--primary-dark)';
+  st.selRange = tag;
+}
+function goAnalysis() {
+  st.objTotal = parseInt(document.getElementById('i-obj').value) || 5;
+  st.subjTotal = parseInt(document.getElementById('i-subj').value) || 2;
+  st.info = {
+    school: document.getElementById('i-school').value || '미입력',
+    grade: document.getElementById('i-grade').value || '',
+    type: document.getElementById('i-type').value,
+    date: document.getElementById('i-date').value,
+    range: document.getElementById('i-range').value,
+    actualScore: document.getElementById('i-actual-score').value || '',
+    actualGrade: document.getElementById('i-actual-grade').value || '',
+  };
+  st.curQ = 1; st.isSubj = false; st.answers = [];
+  show('s-analysis');
+  buildRangeTagBtns();
+  updateQ();
+}
+
+function updateQ() {
+  const total = st.objTotal + st.subjTotal;
+  const cur = st.isSubj ? st.objTotal + st.curQ : st.curQ;
+  document.getElementById('a-progress').style.width = (40 + Math.round(((cur-1)/total)*100)*0.2) + '%';
+  const lbl = st.isSubj ? `주관식 ${st.curQ} / ${st.subjTotal}` : `객관식 ${st.curQ} / ${st.objTotal}`;
+  document.getElementById('a-sub').textContent = lbl;
+  document.getElementById('a-counter').textContent = lbl;
+  document.getElementById('a-qnum').textContent = st.isSubj ? `주관식 ${st.curQ}번 문항` : `${st.curQ}번 문항`;
+  document.getElementById('a-score').value = '';
+  st.selType=null; st.selSub=null; st.selOA=null; st.selStar=0; st.selRange=null;
+  document.querySelectorAll('.type-cat-btn').forEach(b => b.classList.remove('cat-active'));
+  document.querySelectorAll('.sub-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('btn-correct').className = 'oa-btn';
+  document.getElementById('btn-wrong').className = 'oa-btn';
+  document.getElementById('other-input').style.display = 'none';
+  document.getElementById('other-input').value = '';
+  document.getElementById('other-hint').style.display = 'inline';
+  document.querySelectorAll('#s-analysis .star').forEach(s => s.classList.remove('on'));
+  document.getElementById('diff-label').textContent = '선택해주세요';
+  document.getElementById('a-done-btn').disabled = true;
+  // 범위 태그 선택 초기화
+  document.querySelectorAll('.range-tag-btn').forEach(b => {
+    b.style.background = 'var(--bg)';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--text-sub)';
+  });
+}
+
+function setStar(n) { st.selStar=n; document.querySelectorAll('#s-analysis .star').forEach((s,i)=>s.classList.toggle('on',i<n)); document.getElementById('diff-label').textContent=diffLabels[n]; checkDone(); }
+function toggleCat(t) { const key=catKey(t); const btn=document.getElementById('cat-'+key); const already=btn.classList.contains('cat-active'); document.querySelectorAll('.type-cat-btn').forEach(b=>b.classList.remove('cat-active')); document.querySelectorAll('.sub-chip').forEach(c=>c.classList.remove('selected')); const oi=document.getElementById('other-input'); const oh=document.getElementById('other-hint'); if(already){st.selType=null;st.selSub=null;oi.style.display='none';oh.style.display='inline';checkDone();return;} btn.classList.add('cat-active'); st.selType=t; st.selSub=null; if(t==='기타'){oi.style.display='block';oh.style.display='none';oi.value='';}else{oi.style.display='none';oh.style.display='none';} checkDone(); }
+function selSub(cat,sub) { document.querySelectorAll('.type-cat-btn').forEach(b=>b.classList.remove('cat-active')); document.querySelectorAll('.sub-chip').forEach(c=>c.classList.remove('selected')); const btn=document.getElementById('cat-'+catKey(cat)); if(btn)btn.classList.add('cat-active'); event.currentTarget.classList.add('selected'); st.selType=cat; st.selSub=sub; document.getElementById('other-input').style.display='none'; document.getElementById('other-hint').style.display='none'; checkDone(); }
+function setOther(v) { st.selSub=v.trim()||null; checkDone(); }
+function selOA(v) { st.selOA=v; document.getElementById('btn-correct').className='oa-btn'+(v==='correct'?' correct':''); document.getElementById('btn-wrong').className='oa-btn'+(v==='wrong'?' wrong':''); checkDone(); }
+function checkDone() { const hasType=st.selType&&(st.selType!=='기타'||document.getElementById('other-input').value.trim()); document.getElementById('a-done-btn').disabled=!(hasType&&st.selOA&&document.getElementById('a-score').value.trim()&&st.selStar>0); }
+
+function completeQ() {
+  // 이미 이 번호가 있으면 수정, 없으면 추가
+  const qKey = st.isSubj ? `주관식${st.curQ}` : `${st.curQ}`;
+  const idx = st.answers.findIndex(a => a.q === qKey);
+  const entry = {q:qKey,type:st.selType,sub:st.selSub,oa:st.selOA,score:document.getElementById('a-score').value,star:st.selStar,range:st.selRange||'',isSubj:st.isSubj};
+  if (idx >= 0) st.answers[idx] = entry;
+  else st.answers.push(entry);
+
+  if (!st.isSubj) {
+    if (st.curQ < st.objTotal) { st.curQ++; updateQ(); }
+    else {
+      // 객관식 끝 → 검토 화면으로
+      buildReview();
+      show('s-review');
+    }
+  } else {
+    if (st.curQ < st.subjTotal) { st.curQ++; updateQ(); }
+    else { show('s-feedback'); }
+  }
+}
+
+// ── 검토 화면 빌드 ──
+function buildReview() {
+  // 시험정보 요약
+  document.getElementById('review-info-summary').textContent =
+    `${st.info.school} · ${st.info.grade} · ${st.info.type}${st.info.actualScore ? ' · ' + st.info.actualScore + '점' : ''}`;
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = st.answers.filter(a => !a.isSubj).map(a => {
+    const oaColor = a.oa === 'correct' ? 'var(--correct)' : 'var(--wrong)';
+    const oaBg = a.oa === 'correct' ? 'var(--correct-bg)' : 'var(--wrong-bg)';
+    const stars = '★'.repeat(a.star||0) + '☆'.repeat(5-(a.star||0));
+    return `<div onclick="editQ(${a.q})" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--primary-mid)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="width:36px;height:36px;border-radius:50%;background:${oaBg};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:${oaColor};flex-shrink:0">${a.q}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">${a.sub||a.type||'-'} <span style="font-size:11px;color:var(--text-hint)">${a.range?'· '+a.range:''}</span></div>
+        <div style="font-size:11px;color:var(--text-hint);margin-top:2px">${a.score}점 · <span style="color:#F5A623">${stars}</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--primary);font-weight:500;flex-shrink:0">수정 ›</div>
+    </div>`;
+  }).join('');
+}
+
+// ── 문항 수정 ──
+function editQ(qNum) {
+  const a = st.answers.find(a => a.q === String(qNum));
+  if (!a) return;
+  st.curQ = parseInt(qNum);
+  st.isSubj = false;
+  show('s-analysis');
+  updateQ();
+  // 기존 값 복원
+  setTimeout(() => {
+    if (a.score) document.getElementById('a-score').value = a.score;
+    if (a.star) setStar(a.star);
+    if (a.oa) selOA(a.oa);
+    if (a.type) {
+      if (a.sub) {
+        selSub(a.type, a.sub);
+      } else {
+        toggleCat(a.type);
+      }
+    }
+    if (a.range) {
+      document.querySelectorAll('.range-tag-btn').forEach(b => {
+        if (b.textContent === a.range) selectRangeTag(b, a.range);
+      });
+    }
+  }, 100);
+}
+
+function buildSubjList() {
+  const div=document.getElementById('subj-body');
+  if(st.subjTotal===0){div.innerHTML='<p style="font-size:13px;color:var(--text-hint);padding:16px">주관식 문항이 없어요</p>';return;}
+  const types=['단어 배열','문장 완성','단어 쓰기','해석','영작','조건 영작','기타'];
+  // 시험범위 태그
+  const rangeTags = (st.info.range||'').split(',').map(t=>t.trim()).filter(t=>t);
+  const rangeHtml = rangeTags.length
+    ? rangeTags.map(t=>`<button class="sq-range-btn" onclick="selectSqRange(this,'주관식',${0},'${t}')" style="padding:7px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;margin:0 4px 4px 0">${t}</button>`).join('')
+    : '<span style="font-size:12px;color:var(--text-hint)">시험범위를 입력하면 여기에 표시돼요</span>';
+  let html='';
+  for(let i=1;i<=st.subjTotal;i++){
+    const rangeTagsHtml = rangeTags.map(t=>
+      `<button class="sq-range-btn-${i}" onclick="selectSqRange(this,${i},'${t}')"
+        style="padding:7px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-sub);font-family:'Noto Sans KR',sans-serif;margin:0 4px 4px 0;transition:all .15s">${t}</button>`
+    ).join('');
+    html+=`<div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span style="font-size:15px;font-weight:700">주관식 ${i}번</span>
+        <div class="q-num-badge" style="margin-left:auto"><input type="number" id="sq-score-${i}" placeholder="5" min="1" max="20" style="width:36px"><span>점</span></div>
+      </div>
+      <div class="label-sm" style="margin-bottom:6px">난이도</div>
+      <div class="star-wrap" id="sq-sw-${i}" style="margin-bottom:12px">${[1,2,3,4,5].map(n=>`<span class="star" onclick="setSqStar(${i},${n})">★</span>`).join('')}</div>
+      <div class="label-sm" style="margin-bottom:6px">문제 유형</div>
+      <select style="margin-bottom:10px" id="sq-type-${i}">${types.map(t=>`<option>${t}</option>`).join('')}</select>
+      <div class="label-sm" style="margin-bottom:8px">출처 (시험 범위에서 선택)</div>
+      <div style="display:flex;flex-wrap:wrap;margin-bottom:4px">${rangeTagsHtml}</div>
+      <input type="text" id="sq-range-other-${i}" placeholder="직접 입력 (기타)" style="margin-bottom:10px;display:none" oninput="document.getElementById('sq-range-val-${i}').value=this.value">
+      <input type="hidden" id="sq-range-val-${i}">
+      <div class="label-sm" style="margin-bottom:8px">정답 여부</div>
+      <div class="oa-row">
+        <button class="oa-btn" onclick="sqOA(${i},'correct')" id="sq-c-${i}">정답</button>
+        <button class="oa-btn" onclick="sqOA(${i},'wrong')" id="sq-w-${i}">오답</button>
+      </div>
+    </div>`;
+  }
+  div.innerHTML=html;
+  // 기타 버튼 추가
+  for(let i=1;i<=st.subjTotal;i++){
+    const otherBtn = document.createElement('button');
+    otherBtn.textContent='기타';
+    otherBtn.style.cssText='padding:7px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:12px;font-weight:500;color:var(--text-sub);font-family:\'Noto Sans KR\',sans-serif;margin:0 4px 4px 0';
+    otherBtn.onclick = function() {
+      const inp = document.getElementById(`sq-range-other-${i}`);
+      inp.style.display = inp.style.display==='none' ? 'block' : 'none';
+    };
+    const wrap = document.querySelector(`.sq-range-btn-${i}`)?.parentNode;
+    if(wrap) wrap.appendChild(otherBtn);
+  }
+}
+function setSqStar(i,n){document.querySelectorAll(`#sq-sw-${i} .star`).forEach((s,idx)=>s.classList.toggle('on',idx<n));}
+function sqOA(i,v){document.getElementById(`sq-c-${i}`).className='oa-btn'+(v==='correct'?' correct':'');document.getElementById(`sq-w-${i}`).className='oa-btn'+(v==='wrong'?' wrong':'');}
+
+function selectSqRange(btn, i, tag) {
+  // 같은 주관식 번호의 버튼 모두 초기화
+  btn.closest('div').querySelectorAll('button').forEach(b => {
+    b.style.background='var(--bg)';
+    b.style.borderColor='var(--border)';
+    b.style.color='var(--text-sub)';
+  });
+  btn.style.background='#CECBF6';
+  btn.style.borderColor='var(--primary)';
+  btn.style.color='var(--primary-dark)';
+  const val = document.getElementById(`sq-range-val-${i}`);
+  if(val) val.value = tag;
+}
+
+function showProfileEdit() {
+  const panel = document.getElementById('profile-edit-panel');
+  document.getElementById('edit-school').value = st.user?.school || '';
+  document.getElementById('edit-grade').value = st.user?.grade || '';
+  panel.style.display = panel.style.display==='none' ? 'block' : 'none';
+}
+
+async function saveProfileEdit() {
+  const school = document.getElementById('edit-school').value.trim();
+  const grade = document.getElementById('edit-grade').value;
+  if(!school||!grade){alert('학교명과 학년을 입력해주세요');return;}
+  // 로컬 업데이트
+  if(st.user){ st.user.school=school; st.user.grade=grade; }
+  document.getElementById('home-school').textContent=school;
+  document.getElementById('home-grade').textContent=grade;
+  document.getElementById('i-school').value=school;
+  document.getElementById('i-grade').value=grade;
+  document.getElementById('profile-edit-panel').style.display='none';
+  alert('수정됐어요! 다음 시험 입력부터 반영돼요 😊');
+}
+function sel(el,group){el.closest('.card').querySelectorAll('.radio-opt').forEach(o=>{if(o.getAttribute('onclick')&&o.getAttribute('onclick').includes(`'${group}'`))o.classList.remove('selected');});el.classList.add('selected');}
+function toggleChip(el){el.classList.toggle('selected');}
+function updateGoal(){const score=parseInt(document.getElementById('goal-score').value)||0;const grade=document.getElementById('goal-grade').value;const sb=document.getElementById('score-badge');const gb=document.getElementById('grade-badge');sb.textContent=score>0?score>=90?'최상위권 목표':score>=80?'상위권 목표':score>=70?'평균 이상 목표':'차근차근 올라가자':'';if(!sb.textContent)sb.innerHTML='&nbsp;';const msgs={'1등급':'최상위 목표','2등급':'상위권 목표','3등급':'중상위 목표','4등급':'평균 목표','5등급':'차근차근 목표'};gb.textContent=grade?msgs[grade]:'';if(!gb.textContent)gb.innerHTML='&nbsp;';}
+
+// ── 제출 ──
+async function submitAll() {
+  loading(true, '구글 시트에 저장 중...');
+
+  // 주관식 데이터 수집
+  const subjAnswers = [];
+  for(let i=1;i<=st.subjTotal;i++){
+    const score = document.getElementById(`sq-score-${i}`)?.value || '0';
+    const type = document.getElementById(`sq-type-${i}`)?.value || '';
+    const oa = document.getElementById(`sq-c-${i}`)?.classList.contains('correct') ? 'correct' : 'wrong';
+    const rangeVal = document.getElementById(`sq-range-val-${i}`)?.value || document.getElementById(`sq-range-other-${i}`)?.value || '';
+    const starEls = document.querySelectorAll(`#sq-sw-${i} .star.on`);
+    subjAnswers.push({q:`주관식${i}`,type,sub:'',oa,score,star:starEls.length,range:rangeVal,isSubj:true});
+  }
+  const allAnswers = [...st.answers.filter(a=>!a.isSubj), ...subjAnswers];
+
+  const objWrongs = allAnswers.filter(a => !a.isSubj && a.oa === 'wrong');
+  const subjWrongs = subjAnswers.filter(a => a.oa === 'wrong');
+  const allWrongs = allAnswers.filter(a => a.oa === 'wrong');
+  const objWrongScore = objWrongs.reduce((s,a) => s+(parseInt(a.score)||0), 0);
+  const subjWrongScore = subjWrongs.reduce((s,a) => s+(parseInt(a.score)||0), 0);
+  const totalWrongScore = objWrongScore + subjWrongScore;
+  const subjTotalScore = subjAnswers.reduce((s,a) => s+(parseInt(a.score)||0), 0);
+  const subjCorrectScore = subjAnswers.filter(a=>a.oa==='correct').reduce((s,a)=>s+(parseInt(a.score)||0),0);
+
+  const tc = {}; allWrongs.forEach(a => { const k=a.sub||a.type||'기타'; tc[k]=(tc[k]||0)+1; });
+  const topW = Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,4);
+
+  const selVal = (group) => {
+    const el = document.querySelector(`.radio-opt.selected[onclick*="'${group}'"]`);
+    return el ? el.textContent.trim() : '';
+  };
+  const chips = [...document.querySelectorAll('#s-feedback .chip.selected')].map(c=>c.textContent).join(', ');
+  const goalScore = document.getElementById('goal-score').value;
+  const goalGrade = document.getElementById('goal-grade').value;
+
+  const data = {
+    userId: st.user?.id || 'guest',
+    name: st.user?.name || '게스트',
+    school: st.info.school,
+    grade: st.info.grade,
+    examType: st.info.type,
+    examDate: st.info.date,
+    examRange: st.info.range,
+    actualScore: st.info.actualScore,
+    actualGrade: st.info.actualGrade,
+    correctCount: allAnswers.length - allWrongs.length,
+    wrongCount: allWrongs.length,
+    wrongScore: totalWrongScore,
+    goalScore, goalGrade,
+    fbSelf: document.getElementById('fb-self').value,
+    fbTeacher: document.getElementById('fb-teacher').value,
+    fbPrepDays: selVal('prep-days'),
+    fbPrepTime: selVal('prep-time'),
+    fbMaterials: chips,
+    fbEmotion: selVal('emotion'),
+    fbPanic: document.getElementById('fb-panic').value,
+    fbTimeEnough: selVal('time'),
+    fbGood: document.getElementById('fb-good').value,
+    fbBad: document.getElementById('fb-bad').value,
+    fbWrongType: selVal('wrong-type'),
+    fbRegret: document.getElementById('fb-regret').value,
+    fbMethod: document.getElementById('fb-method').value,
+    fbAcademy: selVal('academy'),
+    fbNextChange: '',
+    answers: allAnswers
+  };
+
+  // 임시저장 (혹시 실패에 대비)
+  try { localStorage.setItem('tf_draft_' + (st.user?.id||'guest'), JSON.stringify(data)); } catch(e) {}
+
+  // 저장 시도
+  let saveSuccess = false;
+  try {
+    const res = await api({ action: 'submit', data: JSON.stringify(data) });
+    if(res && res.success) {
+      saveSuccess = true;
+      localStorage.removeItem('tf_draft_' + (st.user?.id||'guest'));
+    } else {
+      throw new Error(res?.message || '저장 실패');
+    }
+  } catch(e) {
+    loading(false);
+    const retry = confirm('⚠️ 구글 시트 저장에 실패했어요!\n\n데이터는 이 기기에 임시 저장됐어요.\n\n다시 시도할까요?');
+    if(retry) {
+      loading(true, '다시 저장 중...');
+      try {
+        await api({ action: 'submit', data: JSON.stringify(data) });
+        saveSuccess = true;
+        localStorage.removeItem('tf_draft_' + (st.user?.id||'guest'));
+      } catch(e2) {
+        alert('⚠️ 저장에 실패했어요. 인터넷 연결을 확인해주세요.\n\n입력한 내용은 이 기기에 임시 저장돼 있어요. 다음에 로그인하면 이어서 할 수 있어요.');
+      }
+    }
+  } finally { loading(false); }
+
+  show('s-done');
+  // 저장 상태 표시
+  document.getElementById('save-status').innerHTML = saveSuccess
+    ? '<div style="padding:10px 14px;background:var(--correct-bg);border-radius:var(--radius-sm);font-size:13px;color:var(--correct);font-weight:600;margin-bottom:10px">✅ 구글 시트에 저장됐어요!</div>'
+    : '<div style="padding:10px 14px;background:var(--wrong-bg);border-radius:var(--radius-sm);font-size:13px;color:var(--wrong);font-weight:600;margin-bottom:10px">⚠️ 시트 저장 실패 — 임시 저장됨. 나중에 다시 시도해주세요.</div>';
+  let sum = `
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">학교</span><span style="font-weight:700">${st.info.school}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">시험</span><span>${st.info.type}</span></div>
+    ${st.info.actualScore?`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">실제 점수</span><span style="font-weight:700;color:var(--primary)">${st.info.actualScore}점 ${st.info.actualGrade?'· '+st.info.actualGrade:''}</span></div>`:''}
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">객관식 정답</span><span style="color:var(--correct);font-weight:700">${allAnswers.filter(a=>!a.isSubj&&a.oa==='correct').length}개</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">객관식 오답</span><span style="color:var(--wrong);font-weight:700">${objWrongs.length}개 (${objWrongScore}점 감점)</span></div>
+    ${st.subjTotal>0?`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">주관식 획득</span><span style="color:var(--correct);font-weight:700">${subjCorrectScore}점 / ${subjTotalScore}점</span></div>`:''}
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;background:var(--bg);margin:0 -16px;padding:8px 16px"><span style="color:var(--text);font-weight:600">총 감점</span><span style="color:var(--wrong);font-weight:700">${totalWrongScore}점</span></div>`;
+  if(topW.length){sum+=`<div style="padding-top:10px"><div style="font-size:11px;color:var(--text-hint);margin-bottom:6px;font-weight:500">취약 유형</div>`;topW.forEach(([t,c])=>{sum+=`<span class="tag tag-wrong">${t} ${c}개</span>`;});sum+='</div>';}
+  sum+=`<div style="padding-top:10px"><div style="font-size:11px;color:var(--text-hint);margin-bottom:6px;font-weight:500">문항별</div><div>`;
+  allAnswers.forEach(a=>{sum+=`<span class="tag ${a.oa==='correct'?'tag-correct':'tag-wrong'}">${a.q}${a.sub?' · '+a.sub:a.type?' · '+a.type:''}</span>`;});
+  sum+='</div></div>';
+  document.getElementById('result-summary').innerHTML=sum;
+
+  const name=st.user?st.user.name:'학생';
+  const subjLine = st.subjTotal>0 ? `\n📝 주관식: ${subjCorrectScore}점 획득 / ${subjTotalScore}점 만점` : '';
+  const kakaoText=`📋 ${st.info.school} TEST FEEDBACK\n\n✏️ ${st.info.type}${st.info.date?' ('+st.info.date+')':''}\n👤 ${name} (${st.info.grade})\n📚 시험 범위: ${st.info.range||'미입력'}${st.info.actualScore?'\n🏆 실제 점수: '+st.info.actualScore+'점'+( st.info.actualGrade?' · '+st.info.actualGrade:''):''}\n\n✅ 객관식 정답: ${allAnswers.filter(a=>!a.isSubj&&a.oa==='correct').length}개\n❌ 객관식 오답: ${objWrongs.length}개 (${objWrongScore}점 감점)${subjLine}\n💥 총 감점: ${totalWrongScore}점${topW.length?'\n\n⚠️ 취약 유형: '+topW.slice(0,3).map(([t,c])=>t+' '+c+'개').join(' · '):''}\n\n🎯 다음 목표: ${goalScore?goalScore+'점':''}${goalScore&&goalGrade?' / ':''}${goalGrade||''}${document.getElementById('fb-self').value?'\n\n💬 "'+document.getElementById('fb-self').value+'"':''}`;
+  document.getElementById('kakao-box').innerHTML=`<div class="share-preview"><div class="share-preview-title">카카오톡 공유 내용</div><div class="share-preview-body">${kakaoText}</div></div>`;
+  document.getElementById('kakao-box').dataset.text=kakaoText;
+}
+
+function copyKakao(){
+  navigator.clipboard.writeText(document.getElementById('kakao-box').dataset.text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='✅ 복사됐어요!';btn.classList.add('copy-done');
+    setTimeout(()=>{btn.textContent='카카오톡 복사하기';btn.classList.remove('copy-done');},2000);
+  });
+}
+</script>
+</body>
+</html>
