@@ -6,13 +6,14 @@
 <title>TEST FEEDBACK</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 :root{
-  --primary:#4B44C8;--primary-light:#EEEDFE;--primary-mid:#7F77DD;--primary-dark:#2E2885;
-  --correct:#2D7A3A;--correct-bg:#EAF3DE;--wrong:#A32D2D;--wrong-bg:#FCEBEB;
-  --text:#1A1A2E;--text-sub:#6B6B8A;--text-hint:#A0A0BF;
-  --border:#E2E2F0;--bg:#F7F7FC;--card:#FFFFFF;
-  --radius:12px;--radius-sm:8px;
+  --primary:#2D0EAA;--primary-light:#EEE9FF;--primary-mid:#5B3FD4;--primary-dark:#1A0870;
+  --correct:#0A7A2E;--correct-bg:#D6F5E0;--wrong:#CC1A1A;--wrong-bg:#FFE5E5;
+  --text:#0D0D1A;--text-sub:#4A4A6A;--text-hint:#9090B0;
+  --border:#D8D5F0;--bg:#F4F2FF;--card:#FFFFFF;
+  --accent:#FF6B00;--accent2:#00A86B;
+  --radius:14px;--radius-sm:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:#E8E8F0;color:var(--text)}
@@ -27,83 +28,83 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:#E8E8F0;c
   .login-card{max-width:400px}
 }
 .topbar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:0.5px solid var(--border);padding:14px 16px 10px}
-.topbar-title{font-size:14px;font-weight:700;color:var(--primary);letter-spacing:.04em}
-.topbar-sub{font-size:11px;color:var(--text-hint);margin-top:2px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--primary);letter-spacing:.04em}
+.topbar-sub{font-size:13px;color:var(--text-hint);margin-top:2px}
 .progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:10px}
 .progress-fill{height:3px;background:var(--primary);border-radius:2px;transition:width .4s}
-.body{padding:16px;padding-bottom:100px}
-.stage-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);display:flex;align-items:center;gap:8px;margin-bottom:12px;margin-top:4px}
+.body{padding:16px;padding-bottom:100px;font-size:16px}
+.stage-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);display:flex;align-items:center;gap:8px;margin-bottom:12px;margin-top:4px}
 .stage-label::after{content:'';flex:1;height:1px;background:#CECBF6}
-.card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
-.q-label{font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.6}
-.q-hint{font-size:11px;color:var(--text-hint);margin-top:-6px;margin-bottom:10px}
-input[type=text],input[type=password],input[type=date],input[type=number],select,textarea{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:'Noto Sans KR',sans-serif;color:var(--text);background:var(--card);outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;box-shadow:none}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px}
+.q-label{font-size:16px;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.6}
+.q-hint{font-size:13px;color:var(--text-hint);margin-top:-8px;margin-bottom:12px}
+input[type=text],input[type=password],input[type=date],input[type=number],select,textarea{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:16px;font-family:'Noto Sans KR',sans-serif;color:var(--text);background:var(--card);outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;box-shadow:none}
 input:focus,select:focus,textarea:focus{border-color:var(--primary-mid)}
 input::placeholder,textarea::placeholder{color:var(--text-hint)}
 textarea{resize:none;line-height:1.7}
-.mb{margin-bottom:10px}
-.label-sm{font-size:11px;color:var(--text-sub);font-weight:500;margin-bottom:5px}
-.radio-row{display:flex;flex-direction:column;gap:6px}
-.radio-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;background:var(--card);transition:all .15s}
+.mb{margin-bottom:12px}
+.label-sm{font-size:13px;color:var(--text-sub);font-weight:600;margin-bottom:6px}
+.radio-row{display:flex;flex-direction:column;gap:8px}
+.radio-opt{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:15px;background:var(--card);transition:all .15s}
 .radio-opt:hover{background:var(--primary-light)}
-.radio-opt.selected{background:var(--primary-light);border-color:var(--primary-mid);color:var(--primary-dark);font-weight:500}
-.radio-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;transition:all .15s}
+.radio-opt.selected{background:var(--primary-light);border-color:var(--primary-mid);color:var(--primary-dark);font-weight:600}
+.radio-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:all .15s}
 .radio-opt.selected .radio-dot{background:var(--primary);border-color:var(--primary)}
-.chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.chip{padding:12px 10px;text-align:center;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:13px;color:var(--text-sub);transition:all .15s;line-height:1.4}
+.chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chip{padding:14px 10px;text-align:center;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:15px;color:var(--text-sub);transition:all .15s;line-height:1.4}
 .chip:hover{background:var(--primary-light);color:var(--primary)}
-.chip.selected{background:#CECBF6;border-color:var(--primary);color:var(--primary-dark);font-weight:500}
+.chip.selected{background:#CECBF6;border-color:var(--primary);color:var(--primary-dark);font-weight:700}
 .type-table{width:100%;border-collapse:collapse}
-.type-table tr{border-bottom:0.5px solid var(--border)}
+.type-table tr{border-bottom:1px solid var(--border)}
 .type-table tr:last-child{border-bottom:none}
-.type-cat{padding:10px 10px 10px 0;width:72px;vertical-align:middle}
-.type-cat-btn{width:100%;padding:10px 4px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--card);cursor:pointer;font-size:13px;font-weight:600;color:var(--text);text-align:center;line-height:1.4;transition:all .15s}
+.type-cat{padding:12px 10px 12px 0;width:80px;vertical-align:middle}
+.type-cat-btn{width:100%;padding:12px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);cursor:pointer;font-size:13px;font-weight:700;color:var(--text);text-align:center;line-height:1.4;transition:all .15s}
 .type-cat-btn:hover{background:var(--bg)}
 .type-cat-btn.cat-active{background:var(--primary-light);border-color:var(--primary-mid);color:var(--primary-dark)}
-.sub-cell{padding:10px 0;vertical-align:middle}
-.sub-chips{display:flex;flex-wrap:wrap;gap:7px}
-.sub-chip{padding:8px 14px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:13px;color:var(--text-sub);transition:all .15s;white-space:nowrap;font-weight:500}
+.sub-cell{padding:12px 0;vertical-align:middle}
+.sub-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sub-chip{padding:10px 16px;border:1.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:14px;color:var(--text-sub);transition:all .15s;white-space:nowrap;font-weight:500}
 .sub-chip:hover{background:var(--primary-light);color:var(--primary);border-color:#AFA9EC}
-.sub-chip.selected{background:#CECBF6;border-color:var(--primary);color:var(--primary-dark);font-weight:600}
+.sub-chip.selected{background:#CECBF6;border-color:var(--primary);color:var(--primary-dark);font-weight:700}
 .star-wrap{display:flex;align-items:center;gap:3px}
-.star{font-size:24px;cursor:pointer;color:#DDD;transition:color .1s;line-height:1;user-select:none}
+.star{font-size:28px;cursor:pointer;color:#DDD;transition:color .1s;line-height:1;user-select:none}
 .star.on{color:#F5A623}
-.diff-label{font-size:11px;color:var(--text-hint);margin-left:4px}
-.oa-row{display:flex;gap:8px}
-.oa-btn{flex:1;padding:11px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--card);cursor:pointer;font-size:14px;font-weight:500;text-align:center;transition:all .15s;font-family:'Noto Sans KR',sans-serif}
+.diff-label{font-size:13px;color:var(--text-hint);margin-left:6px}
+.oa-row{display:flex;gap:10px}
+.oa-btn{flex:1;padding:15px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--card);cursor:pointer;font-size:17px;font-weight:600;text-align:center;transition:all .15s;font-family:'Noto Sans KR',sans-serif}
 .oa-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
 .oa-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
-.q-header{margin-bottom:14px}
-.q-counter{font-size:12px;color:var(--text-hint);margin-bottom:2px}
+.q-header{margin-bottom:16px}
+.q-counter{font-size:14px;color:var(--text-hint);margin-bottom:4px}
 .q-num-row{display:flex;align-items:center;gap:10px}
-.q-num{font-size:22px;font-weight:700;color:var(--text)}
-.q-num-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--primary-light);border:0.5px solid #AFA9EC}
-.q-num-badge input{width:38px;border:none;background:transparent;font-size:15px;font-weight:600;color:var(--primary-dark);text-align:center;padding:0;outline:none}
-.q-num-badge span{font-size:12px;color:var(--primary);font-weight:500}
+.q-num{font-size:24px;font-weight:700;color:var(--text)}
+.q-num-badge{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;background:var(--primary-light);border:1px solid #AFA9EC}
+.q-num-badge input{width:42px;border:none;background:transparent;font-size:17px;font-weight:600;color:var(--primary-dark);text-align:center;padding:0;outline:none}
+.q-num-badge span{font-size:14px;color:var(--primary);font-weight:500}
 .goal-wrap{display:grid;grid-template-columns:1fr 0.5px 1fr;gap:10px;align-items:start}
 .goal-half{display:flex;flex-direction:column;gap:6px}
-.goal-title{font-size:11px;color:var(--text-sub);font-weight:500}
-.score-input-box{display:flex;align-items:center;justify-content:center;gap:5px;padding:0 12px;border:0.5px solid #AFA9EC;border-radius:var(--radius-sm);background:var(--primary-light);height:48px}
-.score-input-box input{flex:1;border:none;background:transparent;font-size:20px;font-weight:600;color:var(--primary-dark);text-align:center;outline:none;min-width:0;padding:0}
-.score-input-box span{font-size:13px;color:var(--primary);font-weight:500;flex-shrink:0}
-.grade-select{border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-weight:500;color:var(--primary-dark);background:var(--card);width:100%;height:48px;text-align:center;cursor:pointer;padding:0 12px}
-.goal-badge{height:28px;display:flex;align-items:center;justify-content:center;padding:0 10px;background:var(--primary-light);border-radius:20px;font-size:11px;color:var(--primary);font-weight:500}
-.divider-v{background:var(--border);width:0.5px;margin-top:20px}
-.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px 28px;background:var(--bg);border-top:0.5px solid var(--border);z-index:50}
-.btn-primary{width:100%;padding:14px;border-radius:var(--radius);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s}
+.goal-title{font-size:13px;color:var(--text-sub);font-weight:600}
+.score-input-box{display:flex;align-items:center;justify-content:center;gap:5px;padding:0 12px;border:1.5px solid #AFA9EC;border-radius:var(--radius-sm);background:var(--primary-light);height:54px}
+.score-input-box input{flex:1;border:none;background:transparent;font-size:22px;font-weight:700;color:var(--primary-dark);text-align:center;outline:none;min-width:0;padding:0}
+.score-input-box span{font-size:15px;color:var(--primary);font-weight:500;flex-shrink:0}
+.grade-select{border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:17px;font-weight:500;color:var(--primary-dark);background:var(--card);width:100%;height:54px;text-align:center;cursor:pointer;padding:0 12px}
+.goal-badge{height:32px;display:flex;align-items:center;justify-content:center;padding:0 10px;background:var(--primary-light);border-radius:20px;font-size:13px;color:var(--primary);font-weight:500}
+.divider-v{background:var(--border);width:0.5px;margin-top:22px}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px 28px;background:var(--bg);border-top:1px solid var(--border);z-index:50}
+.btn-primary{width:100%;padding:17px;border-radius:var(--radius);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:opacity .15s}
 .btn-primary:disabled{opacity:.35;cursor:default}
 .btn-primary:not(:disabled):hover{opacity:.88}
 .login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
-.login-logo{font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--primary);margin-bottom:6px;text-transform:uppercase}
-.login-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:32px}
+.login-logo{font-size:13px;font-weight:700;letter-spacing:.15em;color:var(--primary);margin-bottom:6px;text-transform:uppercase}
+.login-title{font-size:28px;font-weight:700;color:var(--text);margin-bottom:32px}
 .login-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;box-shadow:0 2px 16px rgba(75,68,200,.06)}
-.login-card input{margin-bottom:10px;height:52px}
-.login-btn{width:100%;height:52px;border-radius:var(--radius-sm);background:var(--text);color:#fff;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;margin-top:6px;transition:opacity .15s}
+.login-card input{margin-bottom:12px;height:56px}
+.login-btn{width:100%;height:56px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;font-family:'Noto Sans KR',sans-serif;margin-top:6px;transition:opacity .15s}
 .login-btn:hover{opacity:.85}
-.login-or{text-align:center;font-size:12px;color:var(--text-hint);margin:16px 0}
-.login-sec-btn{width:100%;height:52px;border-radius:var(--radius-sm);background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:14px;font-weight:500;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.login-or{text-align:center;font-size:14px;color:var(--text-hint);margin:16px 0}
+.login-sec-btn{width:100%;height:56px;border-radius:var(--radius-sm);background:var(--card);color:var(--text);border:1.5px solid var(--border);cursor:pointer;font-size:16px;font-weight:500;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
 .login-sec-btn:hover{background:var(--bg)}
-.teacher-link{text-align:center;margin-top:16px;font-size:13px;color:var(--text-hint);cursor:pointer;padding:8px}
+.teacher-link{text-align:center;margin-top:16px;font-size:15px;color:var(--text-hint);cursor:pointer;padding:8px}
 .teacher-link:hover{color:var(--primary)}
 .waiting-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
 .waiting-icon{font-size:52px;margin-bottom:16px}
@@ -161,8 +162,13 @@ textarea{resize:none;line-height:1.7}
 <!-- ══ 로그인 ══ -->
 <div id="s-login" class="screen active">
   <div class="login-wrap">
-    <div class="login-logo">TEST FEEDBACK</div>
-    <div class="login-title">시험 분석 시스템</div>
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--primary-mid);margin-bottom:10px;text-transform:uppercase">헤일리올라</div>
+      <div style="font-size:28px;font-weight:900;color:var(--primary);letter-spacing:-.01em;margin-bottom:10px">시험 피드백</div>
+      <div style="width:40px;height:3px;background:var(--accent);border-radius:2px;margin:0 auto 16px"></div>
+      <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:6px">수고하셨습니다.</div>
+      <div style="font-size:14px;color:var(--text-sub);line-height:1.7">앞으로도 더 발전할 미래를<br>응원합니다.</div>
+    </div>
     <div class="login-card">
       <input type="text" id="l-id" placeholder="아이디" class="mb">
       <input type="password" id="l-pw" placeholder="비밀번호">
@@ -194,7 +200,6 @@ textarea{resize:none;line-height:1.7}
       <input type="text" id="j-id" placeholder="영문+숫자 조합" class="mb">
       <div class="label-sm">비밀번호</div>
       <input type="password" id="j-pw" placeholder="비밀번호 설정" class="mb">
-      <input type="password" id="j-pw2" placeholder="비밀번호 확인" class="mb">
       <button class="login-btn" onclick="doJoin()">가입 신청</button>
       <div class="teacher-link" onclick="show('s-login')">← 로그인으로 돌아가기</div>
     </div>
@@ -204,10 +209,9 @@ textarea{resize:none;line-height:1.7}
 <!-- ══ 승인 대기 ══ -->
 <div id="s-waiting" class="screen">
   <div class="waiting-wrap">
-    <div class="waiting-icon">⏳</div>
-    <div class="waiting-title">승인 대기 중이에요</div>
-    <div class="waiting-desc">선생님이 계정을 확인하고 있어요.<br>승인되면 로그인할 수 있어요.</div>
-    <div class="waiting-back" onclick="show('s-login')">로그인 화면으로 돌아가기</div>
+    <div class="waiting-title" style="font-size:22px">승인 대기 중이에요</div>
+    <div class="waiting-desc" style="font-size:15px">선생님이 계정을 확인하고 있어요.<br>승인되면 로그인할 수 있어요.</div>
+    <div class="waiting-back" onclick="show('s-login')" style="font-size:14px">로그인 화면으로 돌아가기</div>
   </div>
 </div>
 
@@ -282,16 +286,20 @@ textarea{resize:none;line-height:1.7}
         <option>중학교 1학년</option><option>중학교 2학년</option><option>중학교 3학년</option>
         <option>고등학교 1학년</option><option>고등학교 2학년</option><option>고등학교 3학년</option>
       </select>
-      <div class="label-sm">시험 종류</div>
       <select id="i-type" class="mb">
         <option>1학기 중간고사</option><option>1학기 기말고사</option>
         <option>2학기 중간고사</option><option>2학기 기말고사</option><option>모의고사</option>
       </select>
       <div class="label-sm">시험 날짜</div>
       <input type="date" id="i-date" class="mb">
-      <div class="label-sm">시험 범위 <span style="font-weight:400;color:var(--text-hint)">(콤마로 구분해서 입력)</span></div>
-      <input type="text" id="i-range" placeholder="교과서3과, 교과서4과, 25.6모고, 26.3모고, 단어장" class="mb" oninput="previewRangeTags()">
-      <div id="range-tags-preview" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:-4px;margin-bottom:12px"></div>
+      <div class="label-sm" style="margin-bottom:8px">시험 범위 <span style="font-weight:400;color:var(--text-hint)">(각 칸에 하나씩 입력)</span></div>
+      <div id="range-inputs">
+        <input type="text" class="range-input mb" placeholder="교과서 3과">
+        <input type="text" class="range-input mb" placeholder="교과서 4과">
+        <input type="text" class="range-input mb" placeholder="25.6 모의고사">
+        <input type="text" class="range-input mb" placeholder="부교재">
+      </div>
+      <button onclick="addRangeInput()" style="width:100%;padding:10px;border:1px dashed var(--primary-mid);border-radius:var(--radius-sm);background:var(--primary-light);color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px">+ 범위 추가하기</button>
       <div style="display:flex;gap:10px;margin-bottom:10px">
         <div style="flex:1"><div class="label-sm">객관식 문항 수</div><input type="number" id="i-obj" placeholder="28" min="0"></div>
         <div style="flex:1"><div class="label-sm">주관식 문항 수</div><input type="number" id="i-subj" placeholder="7" min="0"></div>
@@ -414,8 +422,37 @@ textarea{resize:none;line-height:1.7}
       <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>별로 도움이 안 됐다</div>
     </div></div>
     <div class="stage-label">5단계 — 나에게, 그리고 다음 목표</div>
+
+    <div class="card">
+      <div class="q-label">저번 시험 점수와 이번 예상 점수</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+        <div>
+          <div style="font-size:12px;color:var(--text-hint);font-weight:600;margin-bottom:8px;text-align:center">저번 시험</div>
+          <div style="display:flex;align-items:center;gap:4px;padding:0 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);height:46px">
+            <input type="number" id="prev-score" placeholder="82" min="0" max="100" style="border:none;background:transparent;font-size:18px;font-weight:700;color:var(--text);text-align:center;padding:0;outline:none;width:100%">
+            <span style="font-size:12px;color:var(--text-hint);flex-shrink:0">점</span>
+          </div>
+          <select id="prev-grade" style="margin-top:6px;font-size:13px;text-align:center">
+            <option value="">등급</option>
+            <option>1등급</option><option>2등급</option><option>3등급</option><option>4등급</option><option>5등급</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--primary);font-weight:600;margin-bottom:8px;text-align:center">이번 예상</div>
+          <div style="display:flex;align-items:center;gap:4px;padding:0 10px;border:1.5px solid var(--primary-mid);border-radius:var(--radius-sm);background:var(--primary-light);height:46px">
+            <input type="number" id="expect-score" placeholder="90" min="0" max="100" style="border:none;background:transparent;font-size:18px;font-weight:700;color:var(--primary-dark);text-align:center;padding:0;outline:none;width:100%">
+            <span style="font-size:12px;color:var(--primary);flex-shrink:0">점</span>
+          </div>
+          <select id="expect-grade" style="margin-top:6px;font-size:13px;text-align:center;border-color:var(--primary-mid);background:var(--primary-light);color:var(--primary-dark)">
+            <option value="">등급</option>
+            <option>1등급</option><option>2등급</option><option>3등급</option><option>4등급</option><option>5등급</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div class="card"><div class="q-label">나 자신에게 하고 싶은 말</div><div class="q-hint">잘한 점, 아쉬운 점, 다짐 — 솔직하게 써봐요</div><textarea style="height:90px" placeholder="예) 이번엔 준비가 부족했지만 다음엔 꼭 2주 전부터 시작하자." id="fb-self"></textarea></div>
-    <div class="card"><div class="q-label">선생님께 부탁드리고 싶은 것</div><div class="q-hint">수업, 자료, 관리 방식 뭐든 편하게 써요</div><textarea style="height:70px" placeholder="예) 빈칸 추론 집중 풀이를 더 해주셨으면 좋겠어요" id="fb-teacher"></textarea></div>
+    <div class="card"><div class="q-label">헤일리올라 선생님들께 요청 + 한마디</div><div class="q-hint">수업, 자료, 관리 방식 뭐든 편하게 써요</div><textarea style="height:80px" placeholder="예) 빈칸 추론 집중 풀이를 더 해주셨으면 좋겠어요" id="fb-teacher"></textarea></div>
     <div class="card"><div class="q-label">다음 시험 목표</div>
       <div class="goal-wrap">
         <div class="goal-half"><div class="goal-title">점수 목표</div>
@@ -480,12 +517,12 @@ textarea{resize:none;line-height:1.7}
 <div id="s-teacher" class="screen">
   <div class="topbar">
     <div class="topbar-title">선생님 대시보드</div>
-    <div class="topbar-sub">학원 관리</div>
+    <div class="topbar-sub">헤일리올라 학원 관리</div>
   </div>
   <div class="tab-row">
-    <div class="tab active" id="tab-approve" onclick="switchTab('approve')">승인 대기 <span id="pending-count"></span></div>
-    <div class="tab" id="tab-analysis" onclick="switchTab('analysis')">문항 분석</div>
-    <div class="tab" id="tab-students" onclick="switchTab('students')">학생 관리</div>
+    <div class="tab active" id="tab-approve" onclick="switchTab('approve')">승인 <span id="pending-count"></span></div>
+    <div class="tab" id="tab-students" onclick="switchTab('students')">학생별</div>
+    <div class="tab" id="tab-schools" onclick="switchTab('schools')">학교별</div>
   </div>
   <div class="body" id="teacher-body"></div>
 </div>
@@ -650,9 +687,7 @@ async function doJoin() {
   const grade = document.getElementById('j-grade').value;
   const id = document.getElementById('j-id').value.trim();
   const pw = document.getElementById('j-pw').value;
-  const pw2 = document.getElementById('j-pw2').value;
   if (!name||!school||!grade||!id||!pw) { alert('모든 항목을 입력해주세요'); return; }
-  if (pw !== pw2) { alert('비밀번호가 일치하지 않아요'); return; }
   loading(true, '가입 신청 중...');
   try {
     const res = await api({ action: 'join', name, school, grade, id, pw });
@@ -774,12 +809,13 @@ async function doTeacherLogin() {
 // ── 선생님 탭 ──
 async function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+  const tabEl = document.getElementById('tab-' + tab);
+  if(tabEl) tabEl.classList.add('active');
   const body = document.getElementById('teacher-body');
   body.innerHTML = '<div style="padding:32px;text-align:center"><div class="loading-spinner" style="margin:0 auto"></div></div>';
   if (tab === 'approve') await buildApproveTab(body);
-  else if (tab === 'analysis') await buildAnalysisTab(body);
-  else await buildStudentsTab(body);
+  else if (tab === 'students') await buildStudentsTab(body);
+  else if (tab === 'schools') await buildSchoolsTab(body);
 }
 
 async function buildApproveTab(body) {
@@ -849,7 +885,275 @@ async function buildAnalysisTab(body) {
   } catch(e) { body.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">불러오기 실패</div>'; }
 }
 
-async function buildStudentsTab(body) {
+// ── 학교별 탭 ──
+async function buildSchoolsTab(body) {
+  try {
+    const res = await api({ action: 'getSchoolAnalysis', tid: TEACHER_ID, tpw: TEACHER_PW });
+    const schools = res.schools || {};
+    const sRes = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
+    window._studentData = sRes.students || [];
+
+    if (!Object.keys(schools).length) {
+      body.innerHTML = '<div style="padding:40px;text-align:center;font-size:15px;color:var(--text-hint)">아직 제출된 데이터가 없어요</div>';
+      return;
+    }
+    let html = '';
+    Object.entries(schools).forEach(([key, data]) => {
+      const students = (sRes.students||[]).filter(s => s.school === data.school);
+      const scores = students.filter(s => s.latestResult?.actualScore).map(s => parseInt(s.latestResult.actualScore));
+      const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+      html += `<div class="card" style="cursor:pointer;transition:all .15s" onclick="showSchoolDetail('${encodeURIComponent(key)}')" onmouseover="this.style.borderColor='var(--primary-mid)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:16px;font-weight:700">${data.school}</div>
+            <div style="font-size:13px;color:var(--text-hint);margin-top:4px">${data.examType} · ${data.studentCount}명</div>
+            ${avg ? `<div style="font-size:14px;font-weight:600;color:var(--primary);margin-top:4px">평균 ${avg}점</div>` : ''}
+          </div>
+          <div style="font-size:22px;color:var(--text-hint)">›</div>
+        </div>
+      </div>`;
+    });
+    body.innerHTML = html;
+    window._schoolsData = schools;
+  } catch(e) { body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-hint)">불러오기 실패</div>'; }
+}
+
+// ── 학교 상세 ──
+async function showSchoolDetail(keyEncoded) {
+  const key = decodeURIComponent(keyEncoded);
+  const data = (window._schoolsData || {})[key];
+  if (!data) return;
+  loading(true, '학교 데이터 분석 중...');
+
+  // 학생별 결과 수집
+  const students = (window._studentData||[]).filter(s => s.school === data.school);
+  const allResults = [];
+  try {
+    for(const s of students) {
+      const res = await api({ action: 'getMyResults', userId: s.id });
+      if(res.success && res.results.length) {
+        allResults.push({ student: s, results: res.results });
+      }
+    }
+  } catch(e) {}
+  loading(false);
+
+  const body = document.getElementById('teacher-body');
+  const qMap = data.qMap || {};
+  const totalStudents = data.studentCount;
+
+  // 어려운 문제 (hard 표시한 학생 수)
+  const hardMap = {};
+  allResults.forEach(({ results }) => {
+    const latest = results[results.length-1];
+    if(latest?.answers) latest.answers.forEach(a => { if(a.hard) hardMap[a.q] = (hardMap[a.q]||0)+1; });
+  });
+
+  // 범위별 오답
+  const rangeMap = {};
+  allResults.forEach(({ results }) => {
+    const latest = results[results.length-1];
+    if(latest?.answers) latest.answers.forEach(a => {
+      const r = a.range||'미분류';
+      if(!rangeMap[r]) rangeMap[r]={total:0,wrong:0};
+      rangeMap[r].total++;
+      if(a.oa==='wrong') rangeMap[r].wrong++;
+    });
+  });
+
+  // 선생님께 한마디
+  const teacherMsgs = [];
+  allResults.forEach(({ student, results }) => {
+    const latest = results[results.length-1];
+    if(latest?.fbTeacher) teacherMsgs.push({ name: student.name, msg: latest.fbTeacher });
+  });
+
+  // 유형별 오답
+  const typeMap = {};
+  Object.entries(qMap).forEach(([q, d]) => {
+    const t = d.type||'기타';
+    if(!typeMap[t]) typeMap[t]={total:0,wrong:0};
+    typeMap[t].total += d.total;
+    typeMap[t].wrong += d.wrongs;
+  });
+  const sortedTypes = Object.entries(typeMap).sort((a,b)=>b[1].wrong-a[1].wrong);
+
+  let html = `
+    <div style="background:linear-gradient(135deg,var(--primary),var(--primary-mid));padding:20px;margin:-16px -16px 16px;color:#fff">
+      <button onclick="switchTab('schools')" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px">← 학교 목록</button>
+      <div style="font-size:13px;opacity:.8">${data.examType}</div>
+      <div style="font-size:22px;font-weight:700;margin:4px 0">${data.school}</div>
+      <div style="font-size:14px;opacity:.8">${totalStudents}명 제출</div>
+    </div>
+
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">전체 문항 분석표</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th>번호</th><th>유형</th><th>오답</th><th>오답률</th><th>어려움</th>
+          </tr></thead><tbody>`;
+
+  Object.entries(qMap).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).forEach(([q,d]) => {
+    const rate = d.total>0 ? Math.round((d.wrongs/d.total)*100) : 0;
+    const hard = hardMap[q]||0;
+    const rateColor = rate>=60?'var(--wrong)':rate>=30?'var(--accent)':'var(--correct)';
+    html += `<tr>
+      <td style="font-weight:700">${q}번</td>
+      <td style="font-size:12px">${d.type||'-'}</td>
+      <td style="color:${rateColor};font-weight:600">${d.wrongs}/${d.total}</td>
+      <td><span style="color:${rateColor};font-weight:700">${rate}%</span></td>
+      <td>${hard>0?`<span style="color:var(--accent);font-weight:600">★${hard}명</span>`:'-'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table></div></div>';
+
+  // 취약 유형
+  html += `<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">많이 틀린 유형</div>
+  <div class="card" style="margin-bottom:16px">`;
+  sortedTypes.slice(0,5).forEach(([t,d],i) => {
+    const rate = d.total>0?Math.round((d.wrong/d.total)*100):0;
+    const barColor = i===0?'var(--wrong)':i===1?'var(--accent)':'var(--primary-mid)';
+    html += `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600">${i+1}위 ${t}</span>
+        <span style="font-size:13px;font-weight:700;color:${barColor}">${rate}%</span>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${rate}%;background:${barColor};border-radius:4px"></div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  // 범위별 오답
+  html += `<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">범위별 오답</div>
+  <div class="card" style="margin-bottom:16px">`;
+  const totalQ = Object.values(rangeMap).reduce((s,d)=>s+d.total,0);
+  Object.entries(rangeMap).forEach(([r,d]) => {
+    const pct = totalQ>0?Math.round((d.total/totalQ)*100):0;
+    const wrongPct = d.total>0?Math.round((d.wrong/d.total)*100):0;
+    html += `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600">${r}</span>
+        <span style="font-size:12px;color:var(--text-hint)">${d.total}문항 · 오답 ${d.wrong}개 (${wrongPct}%)</span>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${wrongPct}%;background:var(--wrong);border-radius:4px"></div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  // 선생님께 한마디
+  if(teacherMsgs.length) {
+    html += `<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">선생님께 요청사항</div>
+    <div class="card" style="margin-bottom:16px">`;
+    teacherMsgs.forEach(({name,msg}) => {
+      html += `<div style="padding:8px 0;border-bottom:0.5px solid var(--border)">
+        <span style="font-size:13px;font-weight:600;color:var(--primary)">${name}</span>
+        <div style="font-size:13px;color:var(--text);margin-top:3px">${msg}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  // 사양서 복사 버튼
+  html += `<button onclick="copySchoolSpec('${encodeURIComponent(key)}')" style="width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:8px">모의 시험지 사양서 복사</button>`;
+  html += `<button onclick="copySchoolKakao('${encodeURIComponent(key)}')" style="width:100%;padding:14px;background:#FEE500;color:#3A1D1D;border:none;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">카톡 복사</button>`;
+
+  body.innerHTML = `<div style="padding:16px;padding-bottom:40px">${html}</div>`;
+  window._currentSchoolKey = key;
+  window._currentSchoolData = { data, qMap, hardMap, rangeMap, typeMap, sortedTypes, teacherMsgs, allResults, totalStudents };
+}
+
+// ── 모의 시험지 사양서 복사 ──
+function copySchoolSpec(keyEncoded) {
+  const d = window._currentSchoolData;
+  if(!d) return;
+  const {data, qMap, hardMap, rangeMap, sortedTypes, teacherMsgs, totalStudents} = d;
+
+  // 배점 구조 분석
+  const scoreMap = {};
+  d.allResults.forEach(({results}) => {
+    const latest = results[results.length-1];
+    if(latest?.answers) latest.answers.forEach(a => {
+      if(a.score) scoreMap[a.score] = (scoreMap[a.score]||0)+1;
+    });
+  });
+  const scoreStr = Object.entries(scoreMap).sort((a,b)=>a[0]-b[0])
+    .map(([s,c])=>`${s}점 ${Math.round(c/totalStudents)}개`).join(' / ');
+
+  // 이번 출제 유형 (겹치면 안 됨)
+  const typeList = Object.entries(qMap)
+    .sort((a,b)=>parseInt(a[0])-parseInt(b[0]))
+    .map(([q,d])=>`${q}번 ${d.type||'-'}`).join('\n');
+
+  // 취약 유형
+  const weakTypes = d.sortedTypes.slice(0,5)
+    .map(([t,d2])=>`${t} ${d2.total>0?Math.round((d2.wrong/d2.total)*100):0}%`).join('\n');
+
+  // 어렵다고 표시된 번호
+  const hardList = Object.entries(hardMap).filter(([,n])=>n>=2)
+    .sort((a,b)=>b[1]-a[1]).map(([q,n])=>`${q}번(${n}명)`).join(' · ')||'없음';
+
+  // 범위별 오답
+  const rangeList = Object.entries(rangeMap)
+    .map(([r,d2])=>`${r}: 오답률 ${d2.total>0?Math.round((d2.wrong/d2.total)*100):0}%`).join('\n');
+
+  // 선생님께
+  const msgList = teacherMsgs.map(({name,msg})=>`${name}: ${msg}`).join('\n')||'없음';
+
+  const text = `[${data.school} ${data.examType} 모의 시험지 사양서]
+
+학교: ${data.school}
+시험: ${data.examType}
+제출 인원: ${totalStudents}명
+
+[시험 구조]
+${scoreStr}
+
+[시험 범위]
+${Object.keys(rangeMap).join(', ')}
+
+[이번 시험 출제 유형] ※ 모의고사에서 겹치면 안 됨
+${typeList}
+
+[취약 유형] ※ 집중 출제 필요
+${weakTypes}
+
+[어렵다고 표시된 번호] ※ 난이도 참고
+${hardList}
+
+[범위별 오답률]
+${rangeList}
+
+[선생님께 요청사항]
+${msgList}
+
+[제작 요청]
+위 사양을 바탕으로 A형/B형 모의 시험지를 제작해주세요.
+- 이번 시험 유형과 겹치지 않게 출제
+- 취약 유형 집중 출제
+- 어렵다고 표시된 번호 난이도 참고
+- 시험 범위 균형 있게 배분`;
+
+  navigator.clipboard.writeText(text).then(() => alert('사양서가 복사됐어요! 클로드에 붙여넣기 하세요'));
+}
+
+// ── 학교별 카톡 복사 ──
+function copySchoolKakao(keyEncoded) {
+  const d = window._currentSchoolData;
+  if(!d) return;
+  const {data, sortedTypes, totalStudents} = d;
+  const students = (window._studentData||[]).filter(s => s.school === data.school);
+  const scores = students.filter(s=>s.latestResult?.actualScore).map(s=>parseInt(s.latestResult.actualScore));
+  const avg = scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):'-';
+  const weakTop3 = sortedTypes.slice(0,3).map(([t,d2])=>`${t} ${d2.total>0?Math.round((d2.wrong/d2.total)*100):0}%`).join(' / ');
+
+  const text = `[${data.school} 시험 분석 결과]\n\n시험: ${data.examType}\n참여: ${totalStudents}명\n평균: ${avg}점\n\n취약 유형: ${weakTop3}\n\n헤일리올라에서 분석한 결과입니다.`;
+  navigator.clipboard.writeText(text).then(() => alert('복사됐어요!'));
+}
   try {
     const res = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
     const students = res.students || [];
@@ -905,13 +1209,36 @@ async function showStudentDetail(userId) {
     if (!r) {
       html += '<div style="text-align:center;padding:40px;font-size:14px;color:var(--text-hint)">아직 제출한 시험이 없어요</div>';
     } else {
-      // 결과 요약
-      html += `<div class="card">
-        <div style="font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:10px">${r.examType} 결과</div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">객관식 정답</span><span style="color:var(--correct);font-weight:700">${r.correctCount}개</span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:13px"><span style="color:var(--text-hint)">객관식 오답</span><span style="color:var(--wrong);font-weight:700">${r.wrongCount}개 (${r.wrongScore}점 감점)</span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span style="color:var(--text-hint)">총 감점</span><span style="color:var(--wrong);font-weight:700">${r.wrongScore}점</span></div>
-      </div>`;
+    // 결과 요약
+    html += `<div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--text-sub);margin-bottom:12px">${r.examType} 결과</div>`;
+
+    // 저번/이번 점수 비교
+    if(latest?.prevScore || r.actualScore) {
+      const prev = latest?.prevScore;
+      const curr = r.actualScore;
+      const diff = (prev && curr) ? parseInt(curr)-parseInt(prev) : null;
+      html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="text-align:center;padding:12px;background:var(--bg);border-radius:var(--radius-sm)">
+          <div style="font-size:11px;color:var(--text-hint);font-weight:600;margin-bottom:4px">저번 시험</div>
+          <div style="font-size:22px;font-weight:700;color:var(--text-sub)">${prev||'-'}${prev?'점':''}</div>
+          <div style="font-size:12px;color:var(--text-hint)">${latest?.prevGrade||''}</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:var(--primary-light);border-radius:var(--radius-sm);border:1px solid var(--primary-mid)">
+          <div style="font-size:11px;color:var(--primary);font-weight:600;margin-bottom:4px">이번 시험</div>
+          <div style="font-size:22px;font-weight:700;color:var(--primary)">${curr||'-'}${curr?'점':''}</div>
+          <div style="font-size:12px;color:var(--primary)">${r.actualGrade||''}</div>
+        </div>
+      </div>
+      ${diff!==null?`<div style="text-align:center;font-size:14px;font-weight:700;color:${diff>0?'var(--correct)':diff<0?'var(--wrong)':'var(--text-sub)'}">
+        ${diff>0?'▲ +'+diff+'점 향상':diff<0?'▼ '+diff+'점 하락':'변화 없음'}
+      </div>`:''}`;
+    }
+
+    html += `
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:0.5px solid var(--border);margin-top:10px;font-size:14px"><span style="color:var(--text-hint)">객관식 정답</span><span style="color:var(--correct);font-weight:700">${r.correctCount}개</span></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:0.5px solid var(--border);font-size:14px"><span style="color:var(--text-hint)">오답/감점</span><span style="color:var(--wrong);font-weight:700">${r.wrongCount}개 (-${r.wrongScore}점)</span></div>
+    </div>`;
 
       // 문항별 분석 (answers 있을 경우)
       if (latest && latest.answers && latest.answers.length) {
@@ -1014,43 +1341,28 @@ function copyStudentKakao(userId) {
   navigator.clipboard.writeText(text).then(() => alert(`${s.name} 결과가 복사됐어요!`));
 }
 
-// ── 시험범위 태그 미리보기 ──
-function previewRangeTags() {
-  const val = document.getElementById('i-range').value;
-  const tags = val.split(',').map(t => t.trim()).filter(t => t);
-  const div = document.getElementById('range-tags-preview');
-  div.innerHTML = tags.map(t =>
-    `<span style="display:inline-block;padding:5px 12px;background:var(--primary-light);border:0.5px solid #AFA9EC;border-radius:20px;font-size:12px;color:var(--primary-dark);font-weight:500">${t}</span>`
-  ).join('');
+// ── 시험범위 칸 추가 ──
+function addRangeInput() {
+  const div = document.getElementById('range-inputs');
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'range-input mb';
+  inp.placeholder = '범위 입력';
+  inp.style.cssText = 'width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:\'Noto Sans KR\',sans-serif;color:var(--text);background:var(--card);outline:none;margin-bottom:10px';
+  div.appendChild(inp);
 }
 
-// ── 문항 출처 태그 버튼 생성 ──
-function buildRangeTagBtns() {
-  const val = document.getElementById('i-range').value;
-  const tags = val.split(',').map(t => t.trim()).filter(t => t);
-  const div = document.getElementById('range-tag-btns');
-  if (!tags.length) {
-    div.innerHTML = '<span style="font-size:12px;color:var(--text-hint)">시험정보에서 범위를 입력하면 여기에 표시돼요</span>';
-    return;
-  }
-  div.innerHTML = tags.map(t =>
-    `<button class="range-tag-btn" onclick="selectRangeTag(this,'${t}')"
-      style="padding:8px 14px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-sub);transition:all .15s;font-family:'Noto Sans KR',sans-serif"
-    >${t}</button>`
-  ).join('');
+function getRangeTags() {
+  return [...document.querySelectorAll('.range-input')]
+    .map(i => i.value.trim()).filter(v => v);
 }
 
-function selectRangeTag(el, tag) {
-  document.querySelectorAll('.range-tag-btn').forEach(b => {
-    b.style.background = 'var(--bg)';
-    b.style.borderColor = 'var(--border)';
-    b.style.color = 'var(--text-sub)';
-  });
-  el.style.background = '#CECBF6';
-  el.style.borderColor = 'var(--primary)';
-  el.style.color = 'var(--primary-dark)';
-  st.selRange = tag;
-}
+// ── 시험범위 태그 미리보기 (구버전 호환) ──
+function previewRangeTags() {}
+
+// ── 문항 출처 태그 버튼 생성 (구버전 호환) ──
+function buildRangeTagBtns() {}
+function selectRangeTag() {}
 // ── 문항 분석 시작 ──
 const TYPES = {
   '중심 내용': ['주제','요지','제목','요약','문단 요약','함축 의미'],
@@ -1071,7 +1383,7 @@ function goAnalysis() {
     grade: document.getElementById('i-grade').value || '',
     type: document.getElementById('i-type').value,
     date: document.getElementById('i-date').value,
-    range: document.getElementById('i-range').value,
+    range: getRangeTags().join(', '),
     actualScore: document.getElementById('i-actual-score').value || '',
     actualGrade: document.getElementById('i-actual-grade').value || '',
   };
@@ -1103,7 +1415,7 @@ function buildAllQuestions() {
     const tc = a.oa==='correct'?'var(--correct)':a.oa==='wrong'?'var(--wrong)':done?'var(--primary-dark)':'var(--text-hint)';
     const label = a.sub||a.type||'';
     html += `<div onclick="openQModal(${i})" style="padding:8px 4px;background:${bg};border:1.5px solid ${bd};border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:all .15s;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
-      <div style="font-size:13px;font-weight:700;color:${tc}">${i}</div>
+      <div style="font-size:13px;font-weight:700;color:${tc}">${i}${a.hard?'⭐':''}</div>
       ${label?`<div style="font-size:9px;color:${tc};max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px">${label}</div>`:''}
       ${a.score?`<div style="font-size:9px;color:${tc}">${a.score}점</div>`:''}
     </div>`;
@@ -1134,18 +1446,18 @@ function createQModal() {
     </div>
     <div class="card" style="margin-bottom:10px">
       <div class="label-sm" style="margin-bottom:8px">난이도</div>
-      <div class="star-wrap" id="modal-stars">
-        <span class="star" onclick="setModalStar(1)">★</span>
-        <span class="star" onclick="setModalStar(2)">★</span>
-        <span class="star" onclick="setModalStar(3)">★</span>
-        <span class="star" onclick="setModalStar(4)">★</span>
-        <span class="star" onclick="setModalStar(5)">★</span>
-        <span class="diff-label" id="modal-diff-label">선택해주세요</span>
-      </div>
+      <button id="modal-hard-btn" onclick="toggleModalHard()" style="padding:10px 20px;border:1.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:14px;font-family:'Noto Sans KR',sans-serif;transition:all .15s">
+        ⭐ 어려운 문제
+      </button>
+      <span id="modal-hard-hint" style="font-size:11px;color:var(--text-hint);margin-left:8px">어려웠으면 클릭</span>
     </div>
     <div class="card" style="margin-bottom:10px">
       <div class="label-sm" style="margin-bottom:10px">문제 유형</div>
       <table class="type-table" id="modal-type-table"></table>
+      <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border)">
+        <div class="label-sm" style="margin-bottom:6px">유형 모름 / 직접 입력</div>
+        <input type="text" id="modal-custom-type" placeholder="예) 어법 - 접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:13px">
+      </div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div class="label-sm" style="margin-bottom:8px">정답 여부</div>
@@ -1163,7 +1475,7 @@ function createQModal() {
 }
 
 let currentModalQ = 0;
-let modalStar = 0, modalOA = '', modalType = '', modalSub = '', modalRange = '';
+let modalStar = 0, modalOA = '', modalType = '', modalSub = '', modalRange = '', modalHard = false, modalCustomType = '';
 
 function openQModal(qNum) {
   currentModalQ = qNum;
@@ -1181,6 +1493,17 @@ function openQModal(qNum) {
   document.getElementById('modal-correct').className = 'oa-btn' + (modalOA==='correct'?' correct':'');
   document.getElementById('modal-wrong').className = 'oa-btn' + (modalOA==='wrong'?' wrong':'');
   modalType = a.type || ''; modalSub = a.sub || '';
+  modalHard = a.hard || false;
+  modalCustomType = a.customType || '';
+  // 어려움 버튼 복원
+  const hardBtn = document.getElementById('modal-hard-btn');
+  const hardHint = document.getElementById('modal-hard-hint');
+  if(hardBtn) {
+    hardBtn.style.background = modalHard ? '#FFF3CD' : 'var(--bg)';
+    hardBtn.style.borderColor = modalHard ? '#F5A623' : 'var(--border)';
+    hardBtn.textContent = modalHard ? '⭐ 어려운 문제 (선택됨)' : '⭐ 어려운 문제';
+  }
+  if(hardHint) hardHint.textContent = modalHard ? '✓ 어렵다고 표시됨' : '어려웠으면 클릭';
 
   // 유형 테이블
   const table = document.getElementById('modal-type-table');
@@ -1193,6 +1516,9 @@ function openQModal(qNum) {
   th += `<tr><td class="type-cat"><button class="type-cat-btn${modalType==='기타'?' cat-active':''}" id="mcat-기타" onclick="setModalCat('기타')">기타</button></td>
   <td class="sub-cell"><input type="text" id="modal-other" placeholder="직접 입력" style="${modalType==='기타'?'':'display:none'}" value="${modalType==='기타'?modalSub:''}" oninput="modalSub=this.value"><span id="modal-other-hint" style="${modalType==='기타'?'display:none':''}font-size:11px;color:var(--text-hint)">기타 선택 후 입력</span></td></tr>`;
   table.innerHTML = th;
+  // 직접입력 칸 복원
+  const customInp = document.getElementById('modal-custom-type');
+  if(customInp) customInp.value = modalCustomType || '';
 
   // 범위 태그
   const rangeTags = (st.info.range||'').split(',').map(t=>t.trim()).filter(t=>t);
@@ -1219,6 +1545,26 @@ function setModalStar(n) {
   document.getElementById('modal-diff-label').textContent = diffLabels[n];
 }
 
+function toggleModalHard() {
+  modalHard = !modalHard;
+  const btn = document.getElementById('modal-hard-btn');
+  const hint = document.getElementById('modal-hard-hint');
+  btn.style.background = modalHard ? '#FFF3CD' : 'var(--bg)';
+  btn.style.borderColor = modalHard ? '#F5A623' : 'var(--border)';
+  btn.textContent = modalHard ? '⭐ 어려운 문제 (선택됨)' : '⭐ 어려운 문제';
+  hint.textContent = modalHard ? '✓ 어렵다고 표시됨' : '어려웠으면 클릭';
+}
+
+function setModalCustomType(v) {
+  modalCustomType = v.trim();
+  // 직접입력 시 유형 선택 해제
+  if(v.trim()) {
+    modalType = ''; modalSub = '';
+    document.querySelectorAll('#modal-type-table .type-cat-btn').forEach(b => b.classList.remove('cat-active'));
+    document.querySelectorAll('#modal-type-table .sub-chip').forEach(c => c.classList.remove('selected'));
+  }
+}
+
 function setModalOA(v) {
   modalOA = v;
   document.getElementById('modal-correct').className = 'oa-btn' + (v==='correct'?' correct':'');
@@ -1239,11 +1585,13 @@ function setModalCat(cat) {
 }
 
 function setModalSub(cat, sub) {
-  modalType = cat; modalSub = sub;
+  modalType = cat; modalSub = sub; modalCustomType = '';
   document.querySelectorAll('#modal-type-table .type-cat-btn').forEach(b => b.classList.remove('cat-active'));
   const btn = document.getElementById('mcat-' + cat.replace(/[\s·]/g,''));
   if(btn) btn.classList.add('cat-active');
   document.querySelectorAll('#modal-type-table .sub-chip').forEach(c => c.classList.toggle('selected', c.textContent===sub));
+  const ci = document.getElementById('modal-custom-type');
+  if(ci) ci.value = '';
 }
 
 function setModalRange(tag, btn) {
@@ -1257,10 +1605,17 @@ function setModalRange(tag, btn) {
 function saveQModal(goNext) {
   const score = document.getElementById('modal-score').value;
   const otherVal = document.getElementById('modal-other')?.value?.trim() || '';
-  const finalType = modalType==='기타' ? '기타' : modalType;
-  const finalSub = modalType==='기타' ? otherVal : modalSub;
+  const customVal = document.getElementById('modal-custom-type')?.value?.trim() || '';
+  let finalType = '', finalSub = '';
+  if(customVal) {
+    finalType = '직접입력'; finalSub = customVal;
+  } else if(modalType==='기타') {
+    finalType = '기타'; finalSub = otherVal;
+  } else {
+    finalType = modalType; finalSub = modalSub;
+  }
   const idx = st.answers.findIndex(a => a.q === String(currentModalQ));
-  const entry = {q:String(currentModalQ),type:finalType,sub:finalSub,oa:modalOA,score,star:modalStar,range:modalRange,isSubj:false};
+  const entry = {q:String(currentModalQ),type:finalType,sub:finalSub,oa:modalOA,score,star:modalHard?5:0,hard:modalHard,customType:customVal,range:modalRange,isSubj:false};
   if(idx>=0) st.answers[idx]=entry; else st.answers.push(entry);
   if(goNext && currentModalQ < st.objTotal) { openQModal(currentModalQ+1); }
   else { closeQModal(); }
