@@ -248,14 +248,12 @@ textarea{resize:none;line-height:1.7}
  </div>
  </div>
 
- <div style="font-size:13px;font-weight:600;color:var(--text-sub);margin:16px 0 8px">새 시험 분석 시작</div>
- <div class="card" style="display:flex;align-items:center;gap:14px;cursor:pointer" onclick="show('s-info')">
- <div style="width:44px;height:44px;background:var(--primary-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0"></div>
- <div>
- <div style="font-size:14px;font-weight:600">시험 피드백 입력</div>
- <div style="font-size:12px;color:var(--text-hint);margin-top:2px">시험 결과를 분석하고 피드백을 남겨요</div>
+ <div style="margin:20px 0 8px">
+ <div onclick="show('s-info')" style="background:var(--primary);border-radius:var(--radius);padding:22px 16px;text-align:center;cursor:pointer;box-shadow:0 4px 16px rgba(45,14,170,.25);transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+   <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:6px;letter-spacing:-.01em">시험 피드백 입력</div>
+   <div style="font-size:14px;color:rgba(255,255,255,.75)">시험 결과를 분석하고 피드백을 남겨요</div>
+   <div style="margin-top:14px;display:inline-block;padding:8px 24px;background:rgba(255,255,255,.2);border-radius:20px;color:#fff;font-size:14px;font-weight:700">시작하기 ›</div>
  </div>
- <div style="margin-left:auto;color:var(--text-hint);font-size:18px">›</div>
  </div>
 
  <div style="font-size:13px;font-weight:600;color:var(--text-sub);margin:16px 0 8px">우리 학교 내 위치</div>
@@ -384,12 +382,6 @@ textarea{resize:none;line-height:1.7}
  <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>2시간</div>
  <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>3시간</div>
  <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>4시간 이상</div>
- </div></div>
- <div class="card"><div class="q-label">가장 많이 활용한 자료는? <span style="font-size:11px;color:var(--text-hint);font-weight:400">(복수 선택)</span></div>
- <div class="chip-grid">
- <div class="chip" onclick="toggleChip(this)">교과서·부교재</div><div class="chip" onclick="toggleChip(this)">학원 프린트</div>
- <div class="chip" onclick="toggleChip(this)">이전 기출문제</div><div class="chip" onclick="toggleChip(this)">단어장·암기장</div>
- <div class="chip" onclick="toggleChip(this)">문제집·모의고사</div><div class="chip" onclick="toggleChip(this)">인터넷 강의</div>
  </div></div>
  <div class="stage-label">2단계 — 시험장 경험</div>
  <div class="card"><div class="q-label">시험을 볼 때 어떤 기분이었나요?</div><div class="radio-row">
@@ -536,8 +528,8 @@ textarea{resize:none;line-height:1.7}
 // ══════════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyolz5opfmZ16DDB64IqjZ_Su9OyMSN2BjFN3JjglXMcl15kfwQqlpmEGX64S8BgDI2/exec';
 
-const TEACHER_ID = 'teacher';
-const TEACHER_PW = 'admin1234';
+const TEACHER_ID = 'haileyaca';
+const TEACHER_PW = 'hailey1@';
 const diffLabels = ['','쉬움','보통 이하','보통','어려움','매우 어려움'];
 const catKey = t => t.replace(/[\s·]/g,'');
 
@@ -1453,34 +1445,33 @@ function createQModal() {
  </div>
  </div>
  <div class="card" style="margin-bottom:10px">
- <div class="label-sm" style="margin-bottom:8px">출처 (시험 범위)</div>
- <div id="modal-range-tags" style="display:flex;flex-wrap:wrap;gap:6px"></div>
- </div>
- <div class="card" style="margin-bottom:10px">
- <div class="label-sm" style="margin-bottom:8px">난이도</div>
- <button id="modal-hard-btn" onclick="toggleModalHard()" style="padding:10px 20px;border:1.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:14px;font-family:'Noto Sans KR',sans-serif;transition:all .15s">
- 어려운 문제
- </button>
- <span id="modal-hard-hint" style="font-size:11px;color:var(--text-hint);margin-left:8px">어려웠으면 클릭</span>
+ <div class="label-sm" style="margin-bottom:10px">출처 (시험 범위)</div>
+ <div id="modal-range-tags" style="display:flex;flex-wrap:wrap;gap:8px"></div>
  </div>
  <div class="card" style="margin-bottom:10px">
  <div class="label-sm" style="margin-bottom:10px">문제 유형</div>
  <table class="type-table" id="modal-type-table"></table>
- <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border)">
+ <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
  <div class="label-sm" style="margin-bottom:6px">유형 모름 / 직접 입력</div>
- <input type="text" id="modal-custom-type" placeholder="예) 어법 - 접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:13px">
+ <input type="text" id="modal-custom-type" placeholder="예) 어법 - 접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:14px">
+ </div>
+ </div>
+ <div class="card" style="margin-bottom:10px">
+ <div class="label-sm" style="margin-bottom:10px">정답 여부</div>
+ <div class="oa-row">
+ <button class="oa-btn" id="modal-correct" onclick="setModalOA('correct')" style="font-size:18px;font-weight:700;padding:16px">정답</button>
+ <button class="oa-btn" id="modal-wrong" onclick="setModalOA('wrong')" style="font-size:18px;font-weight:700;padding:16px">오답</button>
  </div>
  </div>
  <div class="card" style="margin-bottom:16px">
- <div class="label-sm" style="margin-bottom:8px">정답 여부</div>
- <div class="oa-row">
- <button class="oa-btn" id="modal-correct" onclick="setModalOA('correct')">정답</button>
- <button class="oa-btn" id="modal-wrong" onclick="setModalOA('wrong')">오답</button>
+ <div class="label-sm" style="margin-bottom:10px">어렵다고 생각한 문제인가요?</div>
+ <button id="modal-hard-btn" onclick="toggleModalHard()" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:16px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .15s;color:var(--text-sub)">
+ 어렵다고 생각한 문제
+ </button>
+ <span id="modal-hard-hint" style="font-size:13px;color:var(--text-hint);display:block;margin-top:6px;text-align:center">어려웠으면 위 버튼 클릭</span>
  </div>
- </div>
- <div style="display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg);padding:12px 0">
- <button onclick="saveQModal(false)" style="flex:1;padding:13px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장</button>
- <button onclick="saveQModal(true)" style="flex:1;padding:13px;border-radius:var(--radius-sm);background:var(--correct-bg);color:var(--correct);border:1px solid var(--correct);cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장+다음</button>
+ <div style="position:sticky;bottom:0;background:var(--bg);padding:12px 0">
+ <button onclick="saveQModal(true)" style="width:100%;padding:16px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장 + 다음 번호</button>
  </div>
  </div>`;
  document.body.appendChild(modal);
@@ -1653,22 +1644,21 @@ function buildSubjList() {
  ).join('');
  html+=`<div class="card">
  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
- <span style="font-size:15px;font-weight:700">주관식 ${i}번</span>
+ <span style="font-size:16px;font-weight:700">주관식 ${i}번</span>
  <div class="q-num-badge" style="margin-left:auto"><input type="number" id="sq-score-${i}" placeholder="5" min="1" max="20" style="width:36px"><span>점</span></div>
  </div>
- <div class="label-sm" style="margin-bottom:6px">난이도</div>
- <div class="star-wrap" id="sq-sw-${i}" style="margin-bottom:12px">${[1,2,3,4,5].map(n=>`<span class="star" onclick="setSqStar(${i},${n})">★</span>`).join('')}</div>
- <div class="label-sm" style="margin-bottom:6px">문제 유형</div>
- <select style="margin-bottom:10px" id="sq-type-${i}">${types.map(t=>`<option>${t}</option>`).join('')}</select>
- <div class="label-sm" style="margin-bottom:8px">출처 (시험 범위에서 선택)</div>
- <div style="display:flex;flex-wrap:wrap;margin-bottom:4px">${rangeTagsHtml}</div>
+ <div class="label-sm" style="margin-bottom:6px">출처 (시험 범위에서 선택)</div>
+ <div style="display:flex;flex-wrap:wrap;margin-bottom:10px">${rangeTagsHtml}</div>
  <input type="text" id="sq-range-other-${i}" placeholder="직접 입력 (기타)" style="margin-bottom:10px;display:none" oninput="document.getElementById('sq-range-val-${i}').value=this.value">
  <input type="hidden" id="sq-range-val-${i}">
+ <div class="label-sm" style="margin-bottom:6px">문제 유형</div>
+ <select style="margin-bottom:12px;font-size:15px" id="sq-type-${i}">${types.map(t=>`<option>${t}</option>`).join('')}</select>
  <div class="label-sm" style="margin-bottom:8px">정답 여부</div>
- <div class="oa-row">
- <button class="oa-btn" onclick="sqOA(${i},'correct')" id="sq-c-${i}">정답</button>
- <button class="oa-btn" onclick="sqOA(${i},'wrong')" id="sq-w-${i}">오답</button>
+ <div class="oa-row" style="margin-bottom:12px">
+ <button class="oa-btn" onclick="sqOA(${i},'correct')" id="sq-c-${i}" style="font-size:17px;font-weight:700;padding:15px">정답</button>
+ <button class="oa-btn" onclick="sqOA(${i},'wrong')" id="sq-w-${i}" style="font-size:17px;font-weight:700;padding:15px">오답</button>
  </div>
+ <button id="sq-hard-${i}" onclick="toggleSqHard(${i})" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:15px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .15s;color:var(--text-sub)">어렵다고 생각한 문제</button>
  </div>`;
  }
  div.innerHTML=html;
@@ -1687,6 +1677,15 @@ function buildSubjList() {
 }
 function setSqStar(i,n){document.querySelectorAll(`#sq-sw-${i} .star`).forEach((s,idx)=>s.classList.toggle('on',idx<n));}
 function sqOA(i,v){document.getElementById(`sq-c-${i}`).className='oa-btn'+(v==='correct'?' correct':'');document.getElementById(`sq-w-${i}`).className='oa-btn'+(v==='wrong'?' wrong':'');}
+function toggleSqHard(i){
+  const btn=document.getElementById(`sq-hard-${i}`);
+  const isHard=btn.dataset.hard==='true';
+  btn.dataset.hard=isHard?'false':'true';
+  btn.style.background=isHard?'var(--bg)':'#FFF3CD';
+  btn.style.borderColor=isHard?'var(--border)':'#F5A623';
+  btn.style.color=isHard?'var(--text-sub)':'#856404';
+  btn.textContent=isHard?'어렵다고 생각한 문제':'어렵다고 생각한 문제 (선택됨)';
+}
 
 function selectSqRange(btn, i, tag) {
  // 같은 주관식 번호의 버튼 모두 초기화
