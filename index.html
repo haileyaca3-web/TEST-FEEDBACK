@@ -528,8 +528,8 @@ textarea{resize:none;line-height:1.7}
 // ══════════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyolz5opfmZ16DDB64IqjZ_Su9OyMSN2BjFN3JjglXMcl15kfwQqlpmEGX64S8BgDI2/exec';
 
-const TEACHER_ID = 'haileyaca';
-const TEACHER_PW = 'hailey1@';
+const TEACHER_ID = 'teacher';
+const TEACHER_PW = 'admin1234';
 const diffLabels = ['','쉬움','보통 이하','보통','어려움','매우 어려움'];
 const catKey = t => t.replace(/[\s·]/g,'');
 
@@ -1436,43 +1436,49 @@ function createQModal() {
  modal.id = 'q-modal';
  modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;overflow-y:auto;-webkit-overflow-scrolling:touch';
  modal.innerHTML = `<div style="background:var(--bg);min-height:100vh;max-width:480px;margin:0 auto;padding:16px 16px 80px">
- <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
- <button onclick="closeQModal()" style="padding:8px 14px;background:var(--card);border:0.5px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif">← 목록</button>
- <div id="modal-title" style="font-size:18px;font-weight:700"></div>
- <div style="display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;background:var(--primary-light);border:0.5px solid #AFA9EC;margin-left:auto">
- <input type="number" id="modal-score" placeholder="3" min="1" max="10" style="width:36px;border:none;background:transparent;font-size:15px;font-weight:600;color:var(--primary-dark);text-align:center;padding:0;outline:none">
- <span style="font-size:12px;color:var(--primary);font-weight:500">점</span>
+
+ <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+   <button onclick="closeQModal()" style="padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:600">← 목록</button>
+   <div id="modal-title" style="font-size:20px;font-weight:700"></div>
  </div>
+
+ <div style="display:flex;gap:8px;margin-bottom:16px">
+   <button onclick="saveQModal(false,-1)" style="flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--card);color:var(--text);border:1.5px solid var(--border);cursor:pointer;font-size:15px;font-weight:600;font-family:'Noto Sans KR',sans-serif">← 이전</button>
+   <button onclick="saveQModal(true)" style="flex:2;padding:12px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장 + 다음 →</button>
  </div>
- <div class="card" style="margin-bottom:10px">
- <div class="label-sm" style="margin-bottom:10px">출처 (시험 범위)</div>
- <div id="modal-range-tags" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+
+ <div class="card" style="margin-bottom:12px">
+   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+     <div class="label-sm" style="margin:0">출처 (시험 범위)</div>
+     <div style="display:flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;background:var(--primary-light);border:1.5px solid #AFA9EC">
+       <input type="number" id="modal-score" placeholder="3" min="1" max="10" style="width:36px;border:none;background:transparent;font-size:16px;font-weight:700;color:var(--primary-dark);text-align:center;padding:0;outline:none">
+       <span style="font-size:14px;color:var(--primary);font-weight:600">점</span>
+     </div>
+   </div>
+   <div id="modal-range-tags" style="display:flex;flex-wrap:wrap;gap:8px"></div>
  </div>
- <div class="card" style="margin-bottom:10px">
- <div class="label-sm" style="margin-bottom:10px">문제 유형</div>
- <table class="type-table" id="modal-type-table"></table>
- <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
- <div class="label-sm" style="margin-bottom:6px">유형 모름 / 직접 입력</div>
- <input type="text" id="modal-custom-type" placeholder="예) 어법 - 접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:14px">
+
+ <div class="card" style="margin-bottom:12px">
+   <div class="label-sm" style="margin-bottom:12px">문제 유형</div>
+   <table class="type-table" id="modal-type-table"></table>
+   <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+     <div class="label-sm" style="margin-bottom:6px">유형 모름 / 직접 입력</div>
+     <input type="text" id="modal-custom-type" placeholder="예) 어법-접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:15px">
+   </div>
  </div>
+
+ <div class="card" style="margin-bottom:12px">
+   <div class="label-sm" style="margin-bottom:10px">정답 여부</div>
+   <div class="oa-row">
+     <button class="oa-btn" id="modal-correct" onclick="setModalOA('correct')" style="font-size:18px;font-weight:700;padding:16px">정답</button>
+     <button class="oa-btn" id="modal-wrong" onclick="setModalOA('wrong')" style="font-size:18px;font-weight:700;padding:16px">오답</button>
+   </div>
  </div>
- <div class="card" style="margin-bottom:10px">
- <div class="label-sm" style="margin-bottom:10px">정답 여부</div>
- <div class="oa-row">
- <button class="oa-btn" id="modal-correct" onclick="setModalOA('correct')" style="font-size:18px;font-weight:700;padding:16px">정답</button>
- <button class="oa-btn" id="modal-wrong" onclick="setModalOA('wrong')" style="font-size:18px;font-weight:700;padding:16px">오답</button>
- </div>
- </div>
+
  <div class="card" style="margin-bottom:16px">
- <div class="label-sm" style="margin-bottom:10px">어렵다고 생각한 문제인가요?</div>
- <button id="modal-hard-btn" onclick="toggleModalHard()" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:16px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .15s;color:var(--text-sub)">
- 어렵다고 생각한 문제
- </button>
- <span id="modal-hard-hint" style="font-size:13px;color:var(--text-hint);display:block;margin-top:6px;text-align:center">어려웠으면 위 버튼 클릭</span>
+   <button id="modal-hard-btn" onclick="toggleModalHard()" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .15s;color:var(--text-hint)">어렵다고 생각한 문제</button>
  </div>
- <div style="position:sticky;bottom:0;background:var(--bg);padding:12px 0">
- <button onclick="saveQModal(true)" style="width:100%;padding:16px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장 + 다음 번호</button>
- </div>
+
  </div>`;
  document.body.appendChild(modal);
 }
@@ -1489,49 +1495,56 @@ function openQModal(qNum) {
  document.body.style.overflow = 'hidden';
  document.getElementById('modal-title').textContent = `${qNum}번 문항`;
  document.getElementById('modal-score').value = a.score || '';
- modalStar = a.star || 0;
- document.querySelectorAll('#modal-stars .star').forEach((s,i) => s.classList.toggle('on', i < modalStar));
- document.getElementById('modal-diff-label').textContent = modalStar ? diffLabels[modalStar] : '선택해주세요';
+
+ // 정오답 복원
  modalOA = a.oa || '';
  document.getElementById('modal-correct').className = 'oa-btn' + (modalOA==='correct'?' correct':'');
  document.getElementById('modal-wrong').className = 'oa-btn' + (modalOA==='wrong'?' wrong':'');
+
+ // 유형 복원
  modalType = a.type || ''; modalSub = a.sub || '';
  modalHard = a.hard || false;
  modalCustomType = a.customType || '';
+
  // 어려움 버튼 복원
  const hardBtn = document.getElementById('modal-hard-btn');
- const hardHint = document.getElementById('modal-hard-hint');
  if(hardBtn) {
- hardBtn.style.background = modalHard ? '#FFF3CD' : 'var(--bg)';
- hardBtn.style.borderColor = modalHard ? '#F5A623' : 'var(--border)';
- hardBtn.textContent = modalHard ? ' 어려운 문제 (선택됨)' : ' 어려운 문제';
+   hardBtn.style.background = modalHard ? '#FFF3CD' : 'var(--bg)';
+   hardBtn.style.borderColor = modalHard ? '#F5A623' : 'var(--border)';
+   hardBtn.style.color = modalHard ? '#856404' : 'var(--text-hint)';
+   hardBtn.textContent = modalHard ? '어렵다고 생각한 문제 (선택됨)' : '어렵다고 생각한 문제';
  }
- if(hardHint) hardHint.textContent = modalHard ? '✓ 어렵다고 표시됨' : '어려웠으면 클릭';
 
- // 유형 테이블
+ // 유형 테이블 생성
  const table = document.getElementById('modal-type-table');
- let th = '';
- Object.entries(TYPES).forEach(([cat, subs]) => {
- const ck = cat.replace(/[\s·]/g,'');
- th += `<tr><td class="type-cat"><button class="type-cat-btn${modalType===cat?' cat-active':''}" id="mcat-${ck}" onclick="setModalCat('${cat}')">${cat.replace(' ','<br>')}</button></td>
- <td class="sub-cell"><div class="sub-chips">${subs.map(s=>`<span class="sub-chip${modalSub===s?' selected':''}" onclick="setModalSub('${cat}','${s}')">${s}</span>`).join('')}</div></td></tr>`;
- });
- th += `<tr><td class="type-cat"><button class="type-cat-btn${modalType==='기타'?' cat-active':''}" id="mcat-기타" onclick="setModalCat('기타')">기타</button></td>
- <td class="sub-cell"><input type="text" id="modal-other" placeholder="직접 입력" style="${modalType==='기타'?'':'display:none'}" value="${modalType==='기타'?modalSub:''}" oninput="modalSub=this.value"><span id="modal-other-hint" style="${modalType==='기타'?'display:none':''}font-size:11px;color:var(--text-hint)">기타 선택 후 입력</span></td></tr>`;
- table.innerHTML = th;
- // 직접입력 칸 복원
+ if(table) {
+   let th = '';
+   Object.entries(TYPES).forEach(([cat, subs]) => {
+     const ck = cat.replace(/[\s·]/g,'');
+     th += `<tr><td class="type-cat"><button class="type-cat-btn${modalType===cat?' cat-active':''}" id="mcat-${ck}" onclick="setModalCat('${cat}')">${cat.replace(' ','<br>')}</button></td>
+     <td class="sub-cell"><div class="sub-chips">${subs.map(s=>`<span class="sub-chip${modalSub===s?' selected':''}" onclick="setModalSub('${cat}','${s}')">${s}</span>`).join('')}</div></td></tr>`;
+   });
+   th += `<tr><td class="type-cat"><button class="type-cat-btn${modalType==='기타'?' cat-active':''}" id="mcat-기타" onclick="setModalCat('기타')">기타</button></td>
+   <td class="sub-cell"><input type="text" id="modal-other" placeholder="직접 입력" style="${modalType==='기타'?'':'display:none'}" value="${modalType==='기타'?modalSub:''}" oninput="modalSub=this.value"><span id="modal-other-hint" style="${modalType==='기타'?'display:none':'font-size:13px;color:var(--text-hint)'}">기타 선택 후 입력</span></td></tr>`;
+   table.innerHTML = th;
+ }
+
+ // 직접입력 복원
  const customInp = document.getElementById('modal-custom-type');
  if(customInp) customInp.value = modalCustomType || '';
 
- // 범위 태그
+ // 범위 태그 생성
  const rangeTags = (st.info.range||'').split(',').map(t=>t.trim()).filter(t=>t);
  modalRange = a.range || '';
  const rd = document.getElementById('modal-range-tags');
- if(rangeTags.length) {
- rd.innerHTML = [...rangeTags.map(t=>`<button onclick="setModalRange('${t}',this)" style="padding:7px 12px;border:0.5px solid ${modalRange===t?'var(--primary)':'var(--border)'};border-radius:20px;background:${modalRange===t?'#CECBF6':'var(--bg)'};cursor:pointer;font-size:12px;font-weight:500;color:${modalRange===t?'var(--primary-dark)':'var(--text-sub)'};font-family:'Noto Sans KR',sans-serif">${t}</button>`),
- `<button onclick="setModalRange('',this)" style="padding:7px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:12px;color:var(--text-hint);font-family:'Noto Sans KR',sans-serif">없음</button>`].join('');
- } else {
- rd.innerHTML = '<span style="font-size:12px;color:var(--text-hint)">시험정보에서 범위를 입력하면 표시돼요</span>';
+ if(rd) {
+   if(rangeTags.length) {
+     rd.innerHTML = [...rangeTags.map(t=>
+       `<button onclick="setModalRange('${t}',this)" style="padding:9px 16px;border:1.5px solid ${modalRange===t?'var(--primary)':'var(--border)'};border-radius:20px;background:${modalRange===t?'#CECBF6':'var(--bg)'};cursor:pointer;font-size:14px;font-weight:600;color:${modalRange===t?'var(--primary-dark)':'var(--text-sub)'};font-family:'Noto Sans KR',sans-serif;transition:all .15s">${t}</button>`
+     ), `<button onclick="setModalRange('',this)" style="padding:9px 16px;border:1.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:13px;color:var(--text-hint);font-family:'Noto Sans KR',sans-serif">없음</button>`].join('');
+   } else {
+     rd.innerHTML = '<span style="font-size:13px;color:var(--text-hint)">시험정보에서 범위를 입력하면 표시돼요</span>';
+   }
  }
  document.getElementById('q-modal').scrollTop = 0;
 }
@@ -1605,22 +1618,23 @@ function setModalRange(tag, btn) {
  if(tag && btn) { btn.style.background='#CECBF6'; btn.style.borderColor='var(--primary)'; btn.style.color='var(--primary-dark)'; }
 }
 
-function saveQModal(goNext) {
+function saveQModal(goNext, direction) {
  const score = document.getElementById('modal-score').value;
  const otherVal = document.getElementById('modal-other')?.value?.trim() || '';
  const customVal = document.getElementById('modal-custom-type')?.value?.trim() || '';
  let finalType = '', finalSub = '';
  if(customVal) {
- finalType = '직접입력'; finalSub = customVal;
+   finalType = '직접입력'; finalSub = customVal;
  } else if(modalType==='기타') {
- finalType = '기타'; finalSub = otherVal;
+   finalType = '기타'; finalSub = otherVal;
  } else {
- finalType = modalType; finalSub = modalSub;
+   finalType = modalType; finalSub = modalSub;
  }
  const idx = st.answers.findIndex(a => a.q === String(currentModalQ));
  const entry = {q:String(currentModalQ),type:finalType,sub:finalSub,oa:modalOA,score,star:modalHard?5:0,hard:modalHard,customType:customVal,range:modalRange,isSubj:false};
  if(idx>=0) st.answers[idx]=entry; else st.answers.push(entry);
- if(goNext && currentModalQ < st.objTotal) { openQModal(currentModalQ+1); }
+ if(direction === -1 && currentModalQ > 1) { openQModal(currentModalQ - 1); }
+ else if(goNext && currentModalQ < st.objTotal) { openQModal(currentModalQ + 1); }
  else { closeQModal(); }
 }
 
