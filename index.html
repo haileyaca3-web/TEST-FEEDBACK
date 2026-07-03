@@ -20,12 +20,22 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:#E8E8F0;c
 .app{min-height:100vh;max-width:480px;margin:0 auto;background:var(--bg);position:relative;box-shadow:0 0 40px rgba(0,0,0,.12)}
 .screen{display:none}.screen.active{display:block}
 
-/* PC 레이아웃 */
-@media (min-width:768px) {
- body{background:#E8E8F0}
- .app{max-width:480px;margin:0 auto;box-shadow:0 4px 40px rgba(75,68,200,.12);min-height:100vh}
- .bottom-bar{max-width:480px;left:50%;transform:translateX(-50%)}
- .login-card{max-width:400px}
+/* 태블릿/PC 반응형 */
+@media (min-width:600px) {
+ body{background:#DDDAF5}
+ .app{max-width:620px;margin:0 auto;box-shadow:0 4px 40px rgba(45,14,170,.15);min-height:100vh}
+ .bottom-bar{max-width:620px;left:50%;transform:translateX(-50%)}
+ .login-card{max-width:480px}
+ #q-modal > div{max-width:620px}
+ .sub-chip{font-size:15px;padding:10px 18px}
+ .type-cat-btn{font-size:14px;padding:12px 4px}
+ input[type=text],input[type=password],input[type=date],input[type=number],select,textarea{font-size:17px;padding:15px 16px}
+ .btn-primary{font-size:18px;padding:18px}
+ .radio-opt{font-size:16px;padding:15px 16px}
+ .q-label{font-size:17px}
+ .oa-btn{font-size:18px;padding:18px}
+ .card{padding:18px 20px}
+ .label-sm{font-size:14px}
 }
 .topbar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:0.5px solid var(--border);padding:14px 16px 10px}
 .topbar-title{font-size:16px;font-weight:700;color:var(--primary);letter-spacing:.04em}
@@ -1434,52 +1444,56 @@ function buildAllQuestions() {
 function createQModal() {
  const modal = document.createElement('div');
  modal.id = 'q-modal';
- modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;overflow-y:auto;-webkit-overflow-scrolling:touch';
- modal.innerHTML = `<div style="background:var(--bg);min-height:100vh;max-width:480px;margin:0 auto;padding:16px 16px 80px">
+ modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;overflow-y:auto;-webkit-overflow-scrolling:touch';
+ modal.innerHTML = `<div style="background:var(--bg);min-height:100vh;max-width:600px;margin:0 auto;padding:16px 16px 24px;display:flex;flex-direction:column">
 
- <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-   <button onclick="closeQModal()" style="padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:600">← 목록</button>
-   <div id="modal-title" style="font-size:20px;font-weight:700"></div>
- </div>
-
- <div style="display:flex;gap:8px;margin-bottom:16px">
-   <button onclick="saveQModal(false,-1)" style="flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--card);color:var(--text);border:1.5px solid var(--border);cursor:pointer;font-size:15px;font-weight:600;font-family:'Noto Sans KR',sans-serif">← 이전</button>
-   <button onclick="saveQModal(true)" style="flex:2;padding:12px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장 + 다음 →</button>
- </div>
-
- <div class="card" style="margin-bottom:12px">
-   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-     <div class="label-sm" style="margin:0">출처 (시험 범위)</div>
-     <div style="display:flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;background:var(--primary-light);border:1.5px solid #AFA9EC">
-       <input type="number" id="modal-score" placeholder="3" min="1" max="10" style="width:36px;border:none;background:transparent;font-size:16px;font-weight:700;color:var(--primary-dark);text-align:center;padding:0;outline:none">
-       <span style="font-size:14px;color:var(--primary);font-weight:600">점</span>
+   <!-- 헤더 -->
+   <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-shrink:0">
+     <button onclick="closeQModal()" style="padding:10px 18px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;font-size:15px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:600;white-space:nowrap">← 목록</button>
+     <div id="modal-title" style="font-size:22px;font-weight:900;color:var(--primary)"></div>
+     <div style="display:flex;align-items:center;gap:4px;padding:6px 14px;border-radius:20px;background:var(--primary-light);border:1.5px solid #AFA9EC;margin-left:auto">
+       <input type="number" id="modal-score" placeholder="3" min="1" max="10" style="width:40px;border:none;background:transparent;font-size:18px;font-weight:700;color:var(--primary-dark);text-align:center;padding:0;outline:none">
+       <span style="font-size:15px;color:var(--primary);font-weight:600">점</span>
      </div>
    </div>
-   <div id="modal-range-tags" style="display:flex;flex-wrap:wrap;gap:8px"></div>
- </div>
 
- <div class="card" style="margin-bottom:12px">
-   <div class="label-sm" style="margin-bottom:12px">문제 유형</div>
-   <table class="type-table" id="modal-type-table"></table>
-   <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-     <div class="label-sm" style="margin-bottom:6px">유형 모름 / 직접 입력</div>
-     <input type="text" id="modal-custom-type" placeholder="예) 어법-접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:15px">
+   <!-- 출처 -->
+   <div style="background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;flex-shrink:0">
+     <div style="font-size:13px;font-weight:700;color:var(--text-sub);margin-bottom:10px">출처 (시험 범위)</div>
+     <div id="modal-range-tags" style="display:flex;flex-wrap:wrap;gap:8px"></div>
    </div>
- </div>
 
- <div class="card" style="margin-bottom:12px">
-   <div class="label-sm" style="margin-bottom:10px">정답 여부</div>
-   <div class="oa-row">
-     <button class="oa-btn" id="modal-correct" onclick="setModalOA('correct')" style="font-size:18px;font-weight:700;padding:16px">정답</button>
-     <button class="oa-btn" id="modal-wrong" onclick="setModalOA('wrong')" style="font-size:18px;font-weight:700;padding:16px">오답</button>
+   <!-- 유형 -->
+   <div style="background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;flex-shrink:0">
+     <div style="font-size:13px;font-weight:700;color:var(--text-sub);margin-bottom:10px">문제 유형</div>
+     <table class="type-table" id="modal-type-table"></table>
+     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+       <div style="font-size:12px;font-weight:600;color:var(--text-hint);margin-bottom:6px">유형 모름 / 직접 입력</div>
+       <input type="text" id="modal-custom-type" placeholder="예) 어법-접속사, 장문 종합 등" oninput="setModalCustomType(this.value)" style="font-size:15px;padding:10px 14px">
+     </div>
    </div>
- </div>
 
- <div class="card" style="margin-bottom:16px">
-   <button id="modal-hard-btn" onclick="toggleModalHard()" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .15s;color:var(--text-hint)">어렵다고 생각한 문제</button>
- </div>
+   <!-- 정/오답 -->
+   <div style="background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;flex-shrink:0">
+     <div style="font-size:13px;font-weight:700;color:var(--text-sub);margin-bottom:10px">정답 여부</div>
+     <div style="display:flex;gap:10px">
+       <button class="oa-btn" id="modal-correct" onclick="setModalOA('correct')" style="font-size:20px;font-weight:700;padding:18px;flex:1">정답</button>
+       <button class="oa-btn" id="modal-wrong" onclick="setModalOA('wrong')" style="font-size:20px;font-weight:700;padding:18px;flex:1">오답</button>
+     </div>
+   </div>
 
- </div>`;
+   <!-- 어렵다 -->
+   <div style="background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;flex-shrink:0">
+     <button id="modal-hard-btn" onclick="toggleModalHard()" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:14px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .15s;color:var(--text-hint)">어렵다고 생각한 문제</button>
+   </div>
+
+   <!-- 이전/다음 버튼 -->
+   <div style="display:flex;gap:10px;flex-shrink:0">
+     <button onclick="saveQModal(false,-1)" style="flex:1;padding:16px;border-radius:var(--radius-sm);background:var(--card);color:var(--text);border:1.5px solid var(--border);cursor:pointer;font-size:17px;font-weight:700;font-family:'Noto Sans KR',sans-serif">← 이전</button>
+     <button onclick="saveQModal(true)" style="flex:2;padding:16px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;font-family:'Noto Sans KR',sans-serif">저장 + 다음 →</button>
+   </div>
+
+ </div>`;;
  document.body.appendChild(modal);
 }
 
