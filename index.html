@@ -538,8 +538,8 @@ textarea{resize:none;line-height:1.7}
 // ══════════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyolz5opfmZ16DDB64IqjZ_Su9OyMSN2BjFN3JjglXMcl15kfwQqlpmEGX64S8BgDI2/exec';
 
-const TEACHER_ID = 'teacher';
-const TEACHER_PW = 'admin1234';
+const TEACHER_ID = 'haileyaca';
+const TEACHER_PW = 'hailey12';
 const diffLabels = ['','쉬움','보통 이하','보통','어려움','매우 어려움'];
 const catKey = t => t.replace(/[\s·]/g,'');
 
@@ -1175,10 +1175,11 @@ async function buildStudentsTab(body) {
  const res = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
  const students = res.students || [];
  if (!students.length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:15px;color:var(--text-hint)">승인된 학생이 없어요</div>'; return; }
- // 최근 제출 순으로 정렬
+ // 최근 제출 순으로 정렬 (날짜 없으면 행 인덱스 기준)
  students.sort((a, b) => {
    const da = a.latestResult?.submitDate ? new Date(a.latestResult.submitDate) : new Date(0);
    const db = b.latestResult?.submitDate ? new Date(b.latestResult.submitDate) : new Date(0);
+   if(da.getTime() === db.getTime()) return (b.latestResult ? 1 : 0) - (a.latestResult ? 1 : 0);
    return db - da;
  });
  const bySchool = {};
@@ -1342,6 +1343,74 @@ async function showStudentDetail(userId) {
  </div>`;
  }
 
+ // 카톡 전체 내용 생성
+ if(latest && latest.answers) {
+   const answers = latest.answers;
+   const wrongCount = answers.filter(a=>a.oa==='wrong').length;
+   const wrongScore = answers.filter(a=>a.oa==='wrong').reduce((s,a)=>s+(parseInt(a.score)||0),0);
+
+   // 전체 문항 분석
+   const qLines = answers.map(a =>
+     `${a.q}번 ${a.sub||a.type||'-'} ${a.oa==='correct'?'O':'X'} (${a.score||''}점)${a.hard?'  ★어려움':''}`
+   ).join('\n');
+
+   // 범위별
+   const rMap = {};
+   answers.forEach(a => {
+     const rng = a.range||'미분류';
+     if(!rMap[rng]) rMap[rng]={total:0,wrong:0};
+     rMap[rng].total++;
+     if(a.oa==='wrong') rMap[rng].wrong++;
+   });
+   const rangeLines = Object.entries(rMap).map(([rng,d])=>
+     `${rng}: ${d.total}문항${d.wrong>0?' (오답'+d.wrong+'개)':''}`
+   ).join('\n');
+
+   // 유형별
+   const tMap = {};
+   answers.forEach(a => {
+     const t = a.sub||a.type||'기타';
+     if(!tMap[t]) tMap[t]={total:0,wrong:0};
+     tMap[t].total++;
+     if(a.oa==='wrong') tMap[t].wrong++;
+   });
+   const typeLines = Object.entries(tMap).sort((a,b)=>b[1].total-a[1].total)
+     .map(([t,d])=>`${t}: ${d.total}문항${d.wrong>0?' 오답'+d.wrong+'개':' 전체정답'}`).join('\n');
+
+   // 피드백
+   const fbLines = [
+     latest.fbPrepDays && `준비기간: ${latest.fbPrepDays}`,
+     latest.fbPrepTime && `공부시간: ${latest.fbPrepTime}`,
+     latest.fbEmotion && `시험기분: ${latest.fbEmotion}`,
+     latest.fbGood && `잘된부분: ${latest.fbGood}`,
+     latest.fbBad && `못한부분: ${latest.fbBad}`,
+     latest.fbWrongType && `오답원인: ${latest.fbWrongType}`,
+     latest.fbSelf && `나에게: ${latest.fbSelf}`,
+     latest.fbTeacher && `선생님께: ${latest.fbTeacher}`,
+   ].filter(Boolean).join('\n');
+
+   const kakaoText = `[${s.school} TEST FEEDBACK]
+
+시험: ${r.examType}
+학생: ${s.name} (${s.grade})${r.actualScore?'\n실제점수: '+r.actualScore+'점 '+(r.actualGrade||''):''}
+
+정답: ${r.correctCount}개 / 오답: ${wrongCount}개${wrongScore>0?' (-'+wrongScore+'점)':''}
+
+[전체 문항 분석]
+${qLines}
+
+[범위별]
+${rangeLines}
+
+[유형별]
+${typeLines}
+${fbLines?'\n[학생 피드백]\n'+fbLines:''}
+다음 목표: ${r.goalScore?r.goalScore+'점':''} ${r.goalGrade||''}`.trim();
+
+   if(!window._studentDetailCache) window._studentDetailCache = {};
+   window._studentDetailCache[s.id] = kakaoText;
+ }
+
  // 카톡 복사 버튼
  html += `<button onclick="copyStudentKakao('${s.id}')" style="width:100%;padding:14px;background:#FEE500;color:#3A1D1D;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:4px">카카오톡 복사하기</button>`;
  }
@@ -1358,9 +1427,17 @@ async function showStudentDetail(userId) {
 
 function copyStudentKakao(userId) {
  const s = (window._studentData||[]).find(s => s.id === userId);
- if (!s || !s.latestResult) return;
+ if (!s) return;
+ // showStudentDetail에서 저장한 전체 데이터 사용
+ const cached = window._studentDetailCache?.[userId];
+ if (cached) {
+   navigator.clipboard.writeText(cached).then(() => alert(`${s.name} 결과가 복사됐어요!`));
+   return;
+ }
+ // 없으면 기본 정보만
  const r = s.latestResult;
- const text = ` ${s.school} TEST FEEDBACK\n\n ${r.examType}${r.submitDate?' ('+r.submitDate+')':''}\n👤 ${s.name} (${s.grade})\n\n 정답: ${r.correctCount}개\n 오답: ${r.wrongCount}개 (${r.wrongScore}점 감점)\n\n 다음 목표: ${r.goalScore?r.goalScore+'점':''}${r.goalScore&&r.goalGrade?' / ':''}${r.goalGrade||''}`;
+ if (!r) return;
+ const text = `[${s.school} TEST FEEDBACK]\n\n시험: ${r.examType}\n학생: ${s.name} (${s.grade})\n\n정답: ${r.correctCount}개\n오답: ${r.wrongCount}개 (${r.wrongScore}점 감점)\n\n다음 목표: ${r.goalScore?r.goalScore+'점':''}${r.goalScore&&r.goalGrade?' / ':''}${r.goalGrade||''}`;
  navigator.clipboard.writeText(text).then(() => alert(`${s.name} 결과가 복사됐어요!`));
 }
 
