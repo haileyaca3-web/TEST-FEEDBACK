@@ -313,25 +313,7 @@ textarea{resize:none;line-height:1.7}
  <div style="flex:1"><div class="label-sm">객관식 문항 수</div><input type="number" id="i-obj" placeholder="28" min="0"></div>
  <div style="flex:1"><div class="label-sm">주관식 문항 수</div><input type="number" id="i-subj" placeholder="7" min="0"></div>
  </div>
- <div style="height:0.5px;background:var(--border);margin:14px 0"></div>
- <div style="font-size:12px;font-weight:600;color:var(--primary);margin-bottom:10px"> 이번 시험 결과</div>
- <div style="display:flex;gap:10px">
- <div style="flex:1">
- <div class="label-sm">실제 받은 점수</div>
- <div style="display:flex;align-items:center;gap:6px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--primary-light);height:50px">
- <input type="number" id="i-actual-score" placeholder="85" min="0" max="100" style="border:none;background:transparent;font-size:20px;font-weight:700;color:var(--primary-dark);text-align:center;padding:0;outline:none;width:100%">
- <span style="font-size:13px;color:var(--primary);font-weight:500;flex-shrink:0">점</span>
- </div>
- </div>
- <div style="flex:1">
- <div class="label-sm">등급</div>
- <select id="i-actual-grade" style="height:50px;font-size:15px;font-weight:600;color:var(--primary-dark);background:var(--primary-light);border-color:#AFA9EC;text-align:center">
- <option value="">선택</option>
- <option>1등급</option><option>2등급</option><option>3등급</option>
- <option>4등급</option><option>5등급</option><option>6등급</option><option>7등급</option>
- </select>
- </div>
- </div>
+
  </div>
  </div>
  <div class="bottom-bar"><button class="btn-primary" onclick="goAnalysis()">다음 — 문항 분석 시작</button></div>
@@ -387,12 +369,6 @@ textarea{resize:none;line-height:1.7}
  <div class="radio-opt" onclick="sel(this,'prep-days')"><div class="radio-dot"></div>3주일 이상</div>
  <div class="radio-opt" onclick="sel(this,'prep-days')"><div class="radio-dot"></div>한 달 이상</div>
  </div></div>
- <div class="card"><div class="q-label">하루 평균 순수 공부 시간은?</div><div class="radio-row">
- <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>1시간 이하</div>
- <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>2시간</div>
- <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>3시간</div>
- <div class="radio-opt" onclick="sel(this,'prep-time')"><div class="radio-dot"></div>4시간 이상</div>
- </div></div>
  <div class="stage-label">2단계 — 시험장 경험</div>
  <div class="card"><div class="q-label">시험을 볼 때 어떤 기분이었나요?</div><div class="radio-row">
  <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>자신감 있었다</div>
@@ -400,30 +376,8 @@ textarea{resize:none;line-height:1.7}
  <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>모르는 문제가 많아 당황했다</div>
  <div class="radio-opt" onclick="sel(this,'emotion')"><div class="radio-dot"></div>너무 긴장해서 실력 발휘를 못했다</div>
  </div></div>
- <div class="card"><div class="q-label">가장 당황했던 순간이 있었나요?</div><div class="q-hint">없으면 "없음"이라고 써도 돼요</div><textarea style="height:52px" placeholder="예) 장문 독해에서 모르는 단어가 너무 많았다" id="fb-panic"></textarea></div>
- <div class="card"><div class="q-label">시간은 충분했나요?</div><div class="radio-row">
- <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>충분했다</div>
- <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>보통이었다</div>
- <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>조금 부족했다</div>
- <div class="radio-opt" onclick="sel(this,'time')"><div class="radio-dot"></div>많이 부족했다</div>
- </div></div>
  <div class="stage-label">3단계 — 결과 해석</div>
- <div class="card"><div class="q-label">예상보다 잘 된 부분은?</div><div class="q-hint">없으면 "없음"이라고 써도 돼요</div><textarea style="height:52px" placeholder="예) 어법 문제가 생각보다 잘 풀렸다" id="fb-good"></textarea></div>
- <div class="card"><div class="q-label">예상보다 못한 부분은?</div><textarea style="height:52px" placeholder="예) 빈칸 추론에서 헷갈리는 게 많았다" id="fb-bad"></textarea></div>
- <div class="card"><div class="q-label">틀린 문제들, 어떤 경우가 더 많았나요?</div><div class="radio-row">
- <div class="radio-opt" onclick="sel(this,'wrong-type')"><div class="radio-dot"></div>알고 있었는데 실수로 틀린 게 더 많다</div>
- <div class="radio-opt" onclick="sel(this,'wrong-type')"><div class="radio-dot"></div>몰라서 틀린 게 더 많다</div>
- <div class="radio-opt" onclick="sel(this,'wrong-type')"><div class="radio-dot"></div>반반이다</div>
- </div></div>
  <div class="stage-label">4단계 — 원인 분석</div>
- <div class="card"><div class="q-label">이번 시험에서 가장 아쉬운 점은?</div><textarea style="height:52px" placeholder="예) 단어를 좀 더 외웠어야 했는데" id="fb-regret"></textarea></div>
- <div class="card"><div class="q-label">효과가 있었던 공부 방법은?</div><textarea style="height:52px" placeholder="예) 학원 프린트를 3번 반복한 게 도움됐다" id="fb-method"></textarea></div>
- <div class="card"><div class="q-label">학원 수업이 이번 시험에 얼마나 도움됐나요?</div><div class="radio-row">
- <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>매우 도움됐다</div>
- <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>도움됐다</div>
- <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>보통이었다</div>
- <div class="radio-opt" onclick="sel(this,'academy')"><div class="radio-dot"></div>별로 도움이 안 됐다</div>
- </div></div>
  <div class="stage-label">5단계 — 나에게, 그리고 다음 목표</div>
 
  <div class="card">
@@ -1175,13 +1129,10 @@ async function buildStudentsTab(body) {
  const res = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
  const students = res.students || [];
  if (!students.length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:15px;color:var(--text-hint)">승인된 학생이 없어요</div>'; return; }
- // 최근 제출 순으로 정렬 (날짜 없으면 행 인덱스 기준)
- students.sort((a, b) => {
-   const da = a.latestResult?.submitDate ? new Date(a.latestResult.submitDate) : new Date(0);
-   const db = b.latestResult?.submitDate ? new Date(b.latestResult.submitDate) : new Date(0);
-   if(da.getTime() === db.getTime()) return (b.latestResult ? 1 : 0) - (a.latestResult ? 1 : 0);
-   return db - da;
- });
+ // 제출한 학생만 필터링 + 최근순 정렬
+ const submitted = students.filter(s => s.latestResult);
+ const notSubmitted = students.filter(s => !s.latestResult);
+ const sorted = [...submitted, ...notSubmitted];
  const bySchool = {};
  students.forEach(s => { if (!bySchool[s.school]) bySchool[s.school] = []; bySchool[s.school].push(s); });
  let html = '';
@@ -1891,18 +1842,8 @@ async function submitAll() {
  fbSelf: document.getElementById('fb-self').value,
  fbTeacher: document.getElementById('fb-teacher').value,
  fbPrepDays: selVal('prep-days'),
- fbPrepTime: selVal('prep-time'),
- fbMaterials: chips,
  fbEmotion: selVal('emotion'),
- fbPanic: document.getElementById('fb-panic').value,
  fbTimeEnough: selVal('time'),
- fbGood: document.getElementById('fb-good').value,
- fbBad: document.getElementById('fb-bad').value,
- fbWrongType: selVal('wrong-type'),
- fbRegret: document.getElementById('fb-regret').value,
- fbMethod: document.getElementById('fb-method').value,
- fbAcademy: selVal('academy'),
- fbNextChange: '',
  answers: allAnswers
  };
 
@@ -2119,3 +2060,4 @@ async function saveAsImage() {
 </script>
 </body>
 </html>
+
