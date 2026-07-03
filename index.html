@@ -538,8 +538,8 @@ textarea{resize:none;line-height:1.7}
 // ══════════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyolz5opfmZ16DDB64IqjZ_Su9OyMSN2BjFN3JjglXMcl15kfwQqlpmEGX64S8BgDI2/exec';
 
-const TEACHER_ID = 'haileyaca';
-const TEACHER_PW = 'hailey12';
+const TEACHER_ID = 'teacher';
+const TEACHER_PW = 'admin1234';
 const diffLabels = ['','쉬움','보통 이하','보통','어려움','매우 어려움'];
 const catKey = t => t.replace(/[\s·]/g,'');
 
@@ -1175,6 +1175,12 @@ async function buildStudentsTab(body) {
  const res = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
  const students = res.students || [];
  if (!students.length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:15px;color:var(--text-hint)">승인된 학생이 없어요</div>'; return; }
+ // 최근 제출 순으로 정렬
+ students.sort((a, b) => {
+   const da = a.latestResult?.submitDate ? new Date(a.latestResult.submitDate) : new Date(0);
+   const db = b.latestResult?.submitDate ? new Date(b.latestResult.submitDate) : new Date(0);
+   return db - da;
+ });
  const bySchool = {};
  students.forEach(s => { if (!bySchool[s.school]) bySchool[s.school] = []; bySchool[s.school].push(s); });
  let html = '';
