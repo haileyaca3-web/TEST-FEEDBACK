@@ -552,7 +552,7 @@ function api(params) {
  // answers 분리 전송
  const dataNoAnswers = {...mainData, answers: []};
  return jsonpCall({...params, data: JSON.stringify(dataNoAnswers)}).then(res => {
- if (!res.success) return res;
+ if (!res.ok) return res;
  const submitId = res.submitId;
  const chunks = [];
  for (let i = 0; i < answers.length; i += 5) chunks.push(answers.slice(i, i+5));
@@ -610,46 +610,25 @@ function show(id) {
 // ── 로그인 ──
 async function doLogin() {
  const id = document.getElementById('l-id').value.trim();
- const pw = document.getElementById('l-pw').value.trim();
+ const pw = document.getElementById('l-pw').value;
  if (!id || !pw) { alert('아이디와 비밀번호를 입력해주세요'); return; }
  loading(true, '로그인 중...');
  try {
- const res = await api({ action: 'login', id, pw });
- if (res.status === 'pending') { show('s-waiting'); return; }
- if (res.status === 'rejected') { alert('계정이 거절됐어요. 선생님께 문의해주세요'); return; }
- if (!res.success) { alert(res.message || '로그인 실패'); return; }
- st.user = res.user;
- document.getElementById('home-sub').textContent = res.user.name + ' 학생';
- document.getElementById('home-name').textContent = res.user.name + ' 학생';
- document.getElementById('home-school').textContent = res.user.school;
- document.getElementById('home-grade').textContent = res.user.grade;
- document.getElementById('info-sub').textContent = res.user.name + ' 학생';
- document.getElementById('i-school').value = res.user.school;
- document.getElementById('i-grade').value = res.user.grade;
- show('s-home');
- loadHistory();
- // 임시저장 데이터 확인
- setTimeout(async () => {
- const draft = localStorage.getItem('tf_draft_' + res.user.id);
- if(draft) {
- const ok = confirm(' 저번에 저장 못한 데이터가 있어요!\n지금 시트에 다시 저장할까요?');
- if(ok) {
- loading(true, '임시 데이터 저장 중...');
- try {
- await api({ action: 'submit', data: draft });
- localStorage.removeItem('tf_draft_' + res.user.id);
- alert(' 저장 완료!');
- loadHistory();
- } catch(e) { alert('저장 실패. 나중에 다시 시도해주세요.'); }
- finally { loading(false); }
- }
- }
- }, 500);
- } catch(e) { alert('연결 오류가 발생했어요. 잠시 후 다시 시도해주세요.'); }
- finally { loading(false); }
+   const res = await jsonpCall({ action: 'login', id, pw });
+   loading(false);
+   if (res.ok) {
+     if (res.status === 'pending')  { show('s-waiting'); return; }
+     if (res.status === 'rejected') { alert('가입이 거절됐어요. 선생님께 문의하세요'); return; }
+     st.user = res.user;
+     await loadHome();
+     show('s-home');
+   } else {
+     alert(res.msg || '아이디 또는 비밀번호가 틀렸어요');
+   }
+ } catch(e) { loading(false); alert('연결 오류가 발생했어요. 다시 시도해주세요'); }
 }
 
-// ── 회원가입 ──
+
 async function doJoin() {
  const name = document.getElementById('j-name').value.trim();
  const school = document.getElementById('j-school').value.trim();
@@ -660,7 +639,7 @@ async function doJoin() {
  loading(true, '가입 신청 중...');
  try {
  const res = await api({ action: 'join', name, school, grade, id, pw });
- if (res.success) { alert(res.message); show('s-waiting'); }
+ if (res.ok) { alert(res.message); show('s-waiting'); }
  else alert(res.message);
  } catch(e) { alert('연결 오류가 발생했어요.'); }
  finally { loading(false); }
@@ -671,8 +650,8 @@ async function loadHistory() {
  const histDiv = document.getElementById('history-list');
  const rankDiv = document.getElementById('rank-card');
  try {
- const res = await api({ action: 'getMyResults', userId: st.user.id });
- if (!res.success || !res.results.length) {
+ const res = await api({ action: 'getResults', userId: st.user.id });
+ if (!res.ok || !res.results.length) {
  histDiv.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-hint)">아직 제출한 시험이 없어요<br>첫 번째 시험을 분석해봐요! </div>';
  rankDiv.innerHTML = '<div class="card" style="text-align:center;padding:20px;color:var(--text-hint);font-size:13px">시험을 제출하면 학교 내 위치가 표시돼요</div>';
  return;
@@ -790,7 +769,7 @@ async function switchTab(tab) {
 async function buildApproveTab(body) {
  try {
  const res = await api({ action: 'getPending', tid: TEACHER_ID, tpw: TEACHER_PW });
- const pending = res.pending || [];
+ const pending = res.list || [];
  const count = pending.length;
  document.getElementById('pending-count').textContent = count > 0 ? `(${count})` : '';
  if (!count) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:14px;color:var(--text-hint)"> 승인 대기 중인 학생이 없어요</div>'; return; }
@@ -817,8 +796,8 @@ async function buildApproveTab(body) {
 async function approveUser(userId, approve) {
  loading(true, approve ? '승인 중...' : '거절 중...');
  try {
- const res = await api({ action: 'approve', tid: TEACHER_ID, tpw: TEACHER_PW, userId, approve: String(approve) });
- if (res.success) { alert(approve ? '승인했어요!' : '거절했어요.'); switchTab('approve'); }
+ const res = await api({ action: 'approve', tid: TEACHER_ID, tpw: TEACHER_PW, userId, approved: String(approve) });
+ if (res.ok) { alert(approve ? '승인했어요!' : '거절했어요.'); switchTab('approve'); }
  else alert(res.message);
  } catch(e) { alert('오류가 발생했어요'); }
  finally { loading(false); }
@@ -826,7 +805,7 @@ async function approveUser(userId, approve) {
 
 async function buildAnalysisTab(body) {
  try {
- const res = await api({ action: 'getSchoolAnalysis', tid: TEACHER_ID, tpw: TEACHER_PW });
+ const res = await api({ action: 'getSchool', tid: TEACHER_ID, tpw: TEACHER_PW });
  const schools = res.schools || {};
  if (!Object.keys(schools).length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:14px;color:var(--text-hint)">아직 제출된 데이터가 없어요</div>'; return; }
  let html = '';
@@ -857,7 +836,7 @@ async function buildAnalysisTab(body) {
 // ── 학교별 탭 ──
 async function buildSchoolsTab(body) {
  try {
- const res = await api({ action: 'getSchoolAnalysis', tid: TEACHER_ID, tpw: TEACHER_PW });
+ const res = await api({ action: 'getSchool', tid: TEACHER_ID, tpw: TEACHER_PW });
  const schools = res.schools || {};
  const sRes = await api({ action: 'getStudents', tid: TEACHER_ID, tpw: TEACHER_PW });
  window._studentData = sRes.students || [];
@@ -869,7 +848,7 @@ async function buildSchoolsTab(body) {
  let html = '';
  Object.entries(schools).forEach(([key, data]) => {
  const students = (sRes.students||[]).filter(s => s.school === data.school);
- const scores = students.filter(s => s.latestResult?.actualScore).map(s => parseInt(s.latestResult.actualScore));
+ const scores = students.filter(s => s.latest?.actualScore).map(s => parseInt(s.latest.actualScore));
  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
  html += `<div class="card" style="cursor:pointer;transition:all .15s" onclick="showSchoolDetail('${encodeURIComponent(key)}')" onmouseover="this.style.borderColor='var(--primary-mid)'" onmouseout="this.style.borderColor='var(--border)'">
  <div style="display:flex;align-items:center;justify-content:space-between">
@@ -899,8 +878,8 @@ async function showSchoolDetail(keyEncoded) {
  const allResults = [];
  try {
  for(const s of students) {
- const res = await api({ action: 'getMyResults', userId: s.id });
- if(res.success && res.results.length) {
+ const res = await api({ action: 'getResults', userId: s.id });
+ if(res.ok && res.results.length) {
  allResults.push({ student: s, results: res.results });
  }
  }
@@ -1116,7 +1095,7 @@ function copySchoolKakao(keyEncoded) {
  if(!d) return;
  const {data, sortedTypes, totalStudents} = d;
  const students = (window._studentData||[]).filter(s => s.school === data.school);
- const scores = students.filter(s=>s.latestResult?.actualScore).map(s=>parseInt(s.latestResult.actualScore));
+ const scores = students.filter(s=>s.latest?.actualScore).map(s=>parseInt(s.latest.actualScore));
  const avg = scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):'-';
  const weakTop3 = sortedTypes.slice(0,3).map(([t,d2])=>`${t} ${d2.total>0?Math.round((d2.wrong/d2.total)*100):0}%`).join(' / ');
 
@@ -1130,8 +1109,8 @@ async function buildStudentsTab(body) {
  const students = res.students || [];
  if (!students.length) { body.innerHTML = '<div style="padding:40px 16px;text-align:center;font-size:15px;color:var(--text-hint)">승인된 학생이 없어요</div>'; return; }
  // 제출한 학생만 필터링 + 최근순 정렬
- const submitted = students.filter(s => s.latestResult);
- const notSubmitted = students.filter(s => !s.latestResult);
+ const submitted = students.filter(s => s.latest);
+ const notSubmitted = students.filter(s => !s.latest);
  const sorted = [...submitted, ...notSubmitted];
  const bySchool = {};
  students.forEach(s => { if (!bySchool[s.school]) bySchool[s.school] = []; bySchool[s.school].push(s); });
@@ -1139,7 +1118,7 @@ async function buildStudentsTab(body) {
  Object.entries(bySchool).forEach(([school, list]) => {
  html += `<div class="stage-label">${school}</div>`;
  list.forEach(s => {
- const r = s.latestResult;
+ const r = s.latest;
  html += `<div class="card" style="cursor:pointer;transition:border-color .15s" onclick="showStudentDetail('${s.id}')" onmouseover="this.style.borderColor='var(--primary-mid)'" onmouseout="this.style.borderColor='var(--border)'">
  <div style="display:flex;align-items:center;gap:12px">
  <div style="flex:1">
@@ -1164,11 +1143,11 @@ async function showStudentDetail(userId) {
  if (!s) return;
  loading(true, '학생 데이터 불러오는 중...');
  try {
- const res = await api({ action: 'getMyResults', userId });
+ const res = await api({ action: 'getResults', userId });
  loading(false);
  const results = res.results || [];
  const latest = results[results.length - 1];
- const r = s.latestResult;
+ const r = s.latest;
 
  // 상세 화면 HTML 생성
  let html = `
@@ -1385,7 +1364,7 @@ function copyStudentKakao(userId) {
    return;
  }
  // 없으면 기본 정보만
- const r = s.latestResult;
+ const r = s.latest;
  if (!r) return;
  const text = `[${s.school} TEST FEEDBACK]\n\n시험: ${r.examType}\n학생: ${s.name} (${s.grade})\n\n정답: ${r.correctCount}개\n오답: ${r.wrongCount}개 (${r.wrongScore}점 감점)\n\n다음 목표: ${r.goalScore?r.goalScore+'점':''}${r.goalScore&&r.goalGrade?' / ':''}${r.goalGrade||''}`;
  navigator.clipboard.writeText(text).then(() => alert(`${s.name} 결과가 복사됐어요!`));
@@ -1854,7 +1833,7 @@ async function submitAll() {
  let saveSuccess = false;
  try {
  const res = await api({ action: 'submit', data: JSON.stringify(data) });
- if(res && res.success) {
+ if(res && res.ok) {
  saveSuccess = true;
  localStorage.removeItem('tf_draft_' + (st.user?.id||'guest'));
  } else {
