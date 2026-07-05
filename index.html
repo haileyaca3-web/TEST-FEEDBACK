@@ -1276,11 +1276,12 @@ async function showStudentDetail(userId) {
  if(latest && latest.answers) {
    const answers = latest.answers;
    const wrongCount = answers.filter(a=>a.oa==='wrong').length;
+   const correctCount = answers.filter(a=>a.oa==='correct').length;
    const wrongScore = answers.filter(a=>a.oa==='wrong').reduce((s,a)=>s+(parseInt(a.score)||0),0);
 
    // 전체 문항 분석
    const qLines = answers.map(a =>
-     `${a.q}번 ${a.sub||a.type||'-'} ${a.oa==='correct'?'O':'X'} (${a.score||''}점)${a.hard?'  ★어려움':''}`
+     `${a.q}번 ${a.sub||a.type||'-'} ${a.oa==='correct'?'O':'X'}${a.score?' ('+a.score+'점)':''}${a.hard?' ★어려움':''}`
    ).join('\n');
 
    // 범위별
@@ -1323,7 +1324,7 @@ async function showStudentDetail(userId) {
 시험: ${r.examType}
 학생: ${s.name} (${s.grade})${r.actualScore?'\n실제점수: '+r.actualScore+'점 '+(r.actualGrade||''):''}
 
-정답: ${r.correctCount}개 / 오답: ${wrongCount}개${wrongScore>0?' (-'+wrongScore+'점)':''}
+정답: ${correctCount}개 / 오답: ${wrongCount}개${wrongScore>0?' (-'+wrongScore+'점)':''}
 
 [전체 문항 분석]
 ${qLines}
