@@ -620,8 +620,8 @@ async function doLogin() {
      if (res.status === 'pending')  { show('s-waiting'); return; }
      if (res.status === 'rejected') { alert('가입이 거절됐어요. 선생님께 문의하세요'); return; }
      st.user = res.user;
-     await loadHome();
      show('s-home');
+     loadHome().catch(e => console.log('loadHome error:', e));
    } else {
      alert(res.msg || '아이디 또는 비밀번호가 틀렸어요');
    }
@@ -661,8 +661,8 @@ async function loadHistory() {
 
  // ── 학교 내 랭킹 ──
  try {
- const rankRes = await api({ action: 'getSchoolRank', userId: st.user.id, school: st.user.school, tid: TEACHER_ID, tpw: TEACHER_PW });
- if (rankRes.success && rankRes.total >= 2) {
+ const rankRes = await api({ action: 'getSchoolRank', userId: st.user.id, school: st.user.school });
+ if (rankRes.ok && rankRes.total >= 2) {
  const r = rankRes;
  const pct = Math.round((r.rank / r.total) * 100);
  const pctLabel = pct <= 10 ? ' 상위 10%' : pct <= 30 ? '🥈 상위 30%' : pct <= 50 ? '상위 50%' : '평균 이하';
