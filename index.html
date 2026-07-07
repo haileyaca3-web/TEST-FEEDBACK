@@ -553,21 +553,20 @@ function api(params) {
  const dataNoAnswers = {...mainData, answers: []};
  return jsonpCall({...params, data: JSON.stringify(dataNoAnswers)}).then(res => {
  if (!res.ok) return res;
- const submitId = res.submitId;
  const chunks = [];
  for (let i = 0; i < answers.length; i += 5) chunks.push(answers.slice(i, i+5));
  return chunks.reduce((p, chunk) =>
  p.then(() => jsonpCall({
- action: 'submitAnswers',
- submitId,
- answers: JSON.stringify(chunk.map(a => ({
- q: a.q, type: a.type||'', sub: a.sub||'',
- oa: a.oa||'', score: String(a.score||''),
- star: String(a.star||0), range: a.range||''
- })))
+   action: 'submitAnswers',
+   userId: parsed.userId,
+   answers: JSON.stringify(chunk.map(a => ({
+     q: a.q, type: a.type||'', sub: a.sub||'',
+     oa: a.oa||'', score: String(a.score||''),
+     star: String(a.hard?1:0), range: a.range||''
+   })))
  })),
  Promise.resolve()
- ).then(() => ({success: true, submitId}));
+ ).then(() => ({ok: true}));
  });
  }
  return jsonpCall(params);
@@ -2024,3 +2023,4 @@ async function saveAsImage() {
 </script>
 </body>
 </html>
+
