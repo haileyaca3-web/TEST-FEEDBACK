@@ -1414,8 +1414,8 @@ function goAnalysis() {
  type: document.getElementById('i-type').value,
  date: document.getElementById('i-date').value,
  range: getRangeTags().join(', '),
- actualScore: document.getElementById('i-actual-score').value || '',
- actualGrade: document.getElementById('i-actual-grade').value || '',
+ actualScore: '',
+ actualGrade: '',
  };
  // answers 초기화 (개수만큼 빈 슬롯 생성)
  st.answers = Array.from({length: st.objTotal}, (_, i) => ({
@@ -1947,33 +1947,17 @@ async function submitAll() {
 
  // 피드백 내용 수집
  const fbPrepDays = document.querySelector('.radio-opt.selected[onclick*="\'prep-days\'"]')?.textContent?.trim()||'';
- const fbPrepTime = document.querySelector('.radio-opt.selected[onclick*="\'prep-time\'"]')?.textContent?.trim()||'';
+ const fbSelf = document.getElementById('fb-self')?.value || '';
+ const fbTeacher = document.getElementById('fb-teacher')?.value || '';
  const fbEmotion = document.querySelector('.radio-opt.selected[onclick*="\'emotion\'"]')?.textContent?.trim()||'';
  const fbTime = document.querySelector('.radio-opt.selected[onclick*="\'time\'"]')?.textContent?.trim()||'';
- const fbWrongType = document.querySelector('.radio-opt.selected[onclick*="\'wrong-type\'"]')?.textContent?.trim()||'';
- const fbAcademy = document.querySelector('.radio-opt.selected[onclick*="\'academy\'"]')?.textContent?.trim()||'';
- const fbMaterials = [...document.querySelectorAll('#s-feedback .chip.selected')].map(c=>c.textContent).join(', ');
- const fbGood = document.getElementById('fb-good').value;
- const fbBad = document.getElementById('fb-bad').value;
- const fbPanic = document.getElementById('fb-panic').value;
- const fbRegret = document.getElementById('fb-regret').value;
- const fbMethod = document.getElementById('fb-method').value;
- const fbSelf = document.getElementById('fb-self').value;
- const fbTeacher = document.getElementById('fb-teacher').value;
 
  const fbLines = [
- fbPrepDays && ` 준비기간: ${fbPrepDays}`,
- fbPrepTime && ` 📖 하루 공부시간: ${fbPrepTime}`,
- fbMaterials && ` 활용자료: ${fbMaterials}`,
- fbEmotion && ` 시험 기분: ${fbEmotion}`,
- fbPanic && ` 당황한 순간: ${fbPanic}`,
- fbTime && ` ⏱ 시간 여유: ${fbTime}`,
- fbGood && ` 잘된 부분: ${fbGood}`,
- fbBad && ` 못한 부분: ${fbBad}`,
- fbWrongType && ` 오답 원인: ${fbWrongType}`,
- fbRegret && ` 💭 아쉬운 점: ${fbRegret}`,
- fbMethod && ` 효과적인 방법: ${fbMethod}`,
- fbAcademy && ` 학원 도움도: ${fbAcademy}`,
+ fbPrepDays && `준비기간: ${fbPrepDays}`,
+ fbEmotion && `시험 기분: ${fbEmotion}`,
+ fbTime && `시간 여유: ${fbTime}`,
+ fbSelf && `나에게: ${fbSelf}`,
+ fbTeacher && `선생님께: ${fbTeacher}`,
  fbSelf && ` 나에게: "${fbSelf}"`,
  fbTeacher && ` 선생님께: ${fbTeacher}`,
  ].filter(Boolean).join('\n');
