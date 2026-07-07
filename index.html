@@ -582,7 +582,7 @@ function jsonpCall(params) {
  delete window[cbName];
  if(document.body.contains(script)) document.body.removeChild(script);
  reject(new Error('timeout'));
- }, 20000);
+ }, 30000);
  window[cbName] = (data) => {
  clearTimeout(timer);
  delete window[cbName];
@@ -621,7 +621,7 @@ async function doLogin() {
      if (res.status === 'rejected') { alert('가입이 거절됐어요. 선생님께 문의하세요'); return; }
      st.user = res.user;
      show('s-home');
-     loadHome().catch(e => console.log('loadHome error:', e));
+     loadHistory().catch(e => console.log('loadHistory error:', e));
    } else {
      alert(res.msg || '아이디 또는 비밀번호가 틀렸어요');
    }
