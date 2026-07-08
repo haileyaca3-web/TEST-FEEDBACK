@@ -911,10 +911,11 @@ async function saveStudentImage(userId) {
   const r = s.latest;
   if (!r) { alert('데이터가 없어요'); return; }
   const answers = window._studentAnswerCache?.[userId] || [];
-  const wrongCount = r.wrongCount || 0;
-  const correctCount = r.correctCount || 0;
-  const wrongScore = r.wrongScore || 0;
-  const totalQ = answers.length || (correctCount + wrongCount);
+  // answers가 있으면 직접 계산, 없으면 저장된 값 사용
+  const wrongCount = answers.length ? answers.filter(a=>a.oa==='wrong').length : (r.wrongCount || 0);
+  const correctCount = answers.length ? answers.filter(a=>a.oa==='correct').length : (r.correctCount || 0);
+  const wrongScore = answers.length ? answers.filter(a=>a.oa==='wrong').reduce((s,a)=>s+(parseInt(a.score)||0),0) : (r.wrongScore || 0);
+  const totalQ = answers.length || correctCount + wrongCount || r.totalQ || 0;
   const isPerfect = wrongCount === 0 && r.actualScore;
 
   // 카드 HTML 생성
@@ -937,15 +938,15 @@ async function saveStudentImage(userId) {
 
   // 피드백
   const cached = window._studentDetailCache?.[userId] || '';
-  const fbPrepDays = cached.match(/준비기간: (.+)/)?.[1] || '';
-  const fbEmotion = cached.match(/시험기분: (.+)/)?.[1] || '';
-  const fbSelf = cached.match(/나에게: (.+)/)?.[1] || '';
-  const fbTeacher = cached.match(/선생님께: (.+)/)?.[1] || '';
+  const fbPrepDays = cached.match(/준비기간: (.+)/)?.[1] || r.fbPrepDays || '';
+  const fbEmotion = cached.match(/시험기분: (.+)/)?.[1] || r.fbEmotion || '';
+  const fbSelf = cached.match(/나에게: "?([^"\n]+)"?/)?.[1] || r.fbSelf || '';
+  const fbTeacher = cached.match(/선생님께: (.+)/)?.[1] || r.fbTeacher || '';
 
   card.innerHTML = `
   <div style="background:#fff;padding:26px 28px 22px;border-bottom:1px solid #edf0f5">
     <div style="display:inline-block;background:#eef4ff;color:#3b6fd4;border:1px solid #c8d9f7;border-radius:5px;font-size:12px;font-weight:700;padding:3px 10px;margin-bottom:10px">${s.school}</div>
-    <div style="font-size:13px;color:#4a5568;font-weight:600;margin-bottom:5px">${r.examDate||''} · ${r.examType}</div>
+    <div style="font-size:13px;color:#4a5568;font-weight:600;margin-bottom:5px">${formatDate(r.examDate)} · ${r.examType}</div>
     <div style="display:flex;align-items:center;gap:9px">
       <span style="font-size:22px;font-weight:700;color:#1a1a2e">${s.name}</span>
       <span style="font-size:12px;background:#f1f3f7;color:#4a5568;font-weight:600;border-radius:4px;padding:3px 9px">${s.grade}</span>
@@ -964,7 +965,7 @@ async function saveStudentImage(userId) {
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 28px 0">
     <div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:14px 12px;text-align:center">
       <div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:5px">총 문항</div>
-      <div style="font-size:16px;font-weight:700;color:#1a1a2e">${totalQ}문항</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a2e">${totalQ||correctCount+wrongCount}문항</div>
     </div>
     <div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:14px 12px;text-align:center">
       <div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:5px">정답 / 오답</div>
@@ -1639,6 +1640,15 @@ async function submitAll() {
   const kakaoText=`📘 ${st.info.school} TEST FEEDBACK\n\n📋 ${st.info.type}${st.info.date?' ('+st.info.date+')':''}\n👤 ${name} (${st.info.grade})\n📚 시험 범위: ${st.info.range||'미입력'}${actualScore?'\n🎯 실제 점수: '+actualScore+'점':''}\n\n⭕ 정답: ${correctCount}개\n❌ 오답: ${wrongCount}개 (${wrongScore}점 감점)\n\n📊 범위별 오답\n${rangeLines}\n\n📈 유형별 분석\n${typeLines}${topWList.length?'\n\n🔥 취약 유형: '+topWList.slice(0,3).map(([t,c])=>t+' '+c+'개').join(' · '):''}\n\n💬 학생 피드백\n${fbLines}\n\n🎯 다음 목표: ${goalScore?goalScore+'점':''}${goalScore&&goalGrade?' / ':''}${goalGrade||''}`;
   document.getElementById('kakao-box').innerHTML=`<div class="share-preview"><div class="share-preview-title">카카오톡 공유 내용</div><div class="share-preview-body">${kakaoText}</div></div>`;
   document.getElementById('kakao-box').dataset.text=kakaoText;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  try {
+    const date = new Date(d);
+    if (isNaN(date)) return d;
+    return date.getFullYear() + '.' + String(date.getMonth()+1).padStart(2,'0') + '.' + String(date.getDate()).padStart(2,'0');
+  } catch(e) { return d; }
 }
 
 function copyKakao(){
