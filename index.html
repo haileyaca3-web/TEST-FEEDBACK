@@ -867,6 +867,8 @@ ${typeLines}${fbLines?'\n\n[학생 피드백]\n'+fbLines:''}
 
         if(!window._studentDetailCache) window._studentDetailCache = {};
         window._studentDetailCache[s.id] = kakaoText;
+        if(!window._studentAnswerCache) window._studentAnswerCache = {};
+        window._studentAnswerCache[s.id] = answers;
       }
 
       if (r.goalScore) {
@@ -876,7 +878,11 @@ ${typeLines}${fbLines?'\n\n[학생 피드백]\n'+fbLines:''}
         </div>`;
       }
     }
-    html += `<button onclick="copyStudentKakao('${s.id}')" style="width:100%;padding:14px;background:#FEE500;color:#3A1D1D;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:4px">카카오톡 복사하기</button>`;
+    html += `
+<div style="display:flex;gap:8px;margin-top:8px">
+  <button onclick="copyStudentKakao('${s.id}')" style="flex:1;padding:14px;background:#FEE500;color:#3A1D1D;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">📋 카톡 텍스트 복사</button>
+  <button onclick="saveStudentImage('${s.id}')" style="flex:1;padding:14px;background:#2D0EAA;color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">🖼️ 이미지 저장</button>
+</div>`;
     document.getElementById('teacher-body').innerHTML = `<div style="padding:16px;padding-bottom:40px">${html}</div>`;
     window.scrollTo(0,0);
   } catch(e) {
@@ -897,6 +903,110 @@ function copyStudentKakao(userId) {
   if (!r) return;
   const text = `[${s.school} TEST FEEDBACK]\n\n시험: ${r.examType}\n학생: ${s.name} (${s.grade})\n정답: ${r.correctCount||0}개 / 오답: ${r.wrongCount||0}개${(r.wrongScore||0)>0?' (-'+r.wrongScore+'점)':''}\n\n다음 목표: ${r.goalScore?r.goalScore+'점':''}`;
   navigator.clipboard.writeText(text).then(() => alert(`${s.name} 결과가 복사됐어요!`));
+}
+
+async function saveStudentImage(userId) {
+  const s = (window._studentData||[]).find(s => s.id === userId);
+  if (!s) return;
+  const r = s.latest;
+  if (!r) { alert('데이터가 없어요'); return; }
+  const answers = window._studentAnswerCache?.[userId] || [];
+  const wrongCount = r.wrongCount || 0;
+  const correctCount = r.correctCount || 0;
+  const wrongScore = r.wrongScore || 0;
+  const totalQ = answers.length || (correctCount + wrongCount);
+  const isPerfect = wrongCount === 0 && r.actualScore;
+
+  // 카드 HTML 생성
+  const card = document.createElement('div');
+  card.style.cssText = 'position:fixed;left:-9999px;top:0;width:660px;background:#f8f9fb;border-radius:20px;overflow:hidden;padding-bottom:28px;font-family:Noto Sans KR,-apple-system,sans-serif;color:#1a1a2e;border:1px solid #e2e6ed';
+
+  // 문항 그리드
+  let qGrid = '';
+  if (answers.length) {
+    answers.forEach(a => {
+      const isWrong = a.oa === 'wrong';
+      qGrid += `<div style="background:${isWrong?'#fff5f5':'#fff'};border:1px solid ${isWrong?'#fed7d7':'#edf0f5'};border-radius:10px;padding:11px 6px 9px;text-align:center">
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:5px">${a.q}번</div>
+        <div style="font-size:11px;color:#374151;font-weight:600;line-height:1.4;word-break:keep-all">${a.sub||a.type||'-'}</div>
+        <div style="font-size:11px;color:${isWrong?'#e53e3e':'#3b6fd4'};margin-top:5px;font-weight:700">${isWrong?'-'+a.score+'점':a.score+'점'}</div>
+        <span style="display:block;width:7px;height:7px;border-radius:50%;background:${isWrong?'#e53e3e':'#48bb78'};margin:6px auto 0"></span>
+      </div>`;
+    });
+  }
+
+  // 피드백
+  const cached = window._studentDetailCache?.[userId] || '';
+  const fbPrepDays = cached.match(/준비기간: (.+)/)?.[1] || '';
+  const fbEmotion = cached.match(/시험기분: (.+)/)?.[1] || '';
+  const fbSelf = cached.match(/나에게: (.+)/)?.[1] || '';
+  const fbTeacher = cached.match(/선생님께: (.+)/)?.[1] || '';
+
+  card.innerHTML = `
+  <div style="background:#fff;padding:26px 28px 22px;border-bottom:1px solid #edf0f5">
+    <div style="display:inline-block;background:#eef4ff;color:#3b6fd4;border:1px solid #c8d9f7;border-radius:5px;font-size:12px;font-weight:700;padding:3px 10px;margin-bottom:10px">${s.school}</div>
+    <div style="font-size:13px;color:#4a5568;font-weight:600;margin-bottom:5px">${r.examDate||''} · ${r.examType}</div>
+    <div style="display:flex;align-items:center;gap:9px">
+      <span style="font-size:22px;font-weight:700;color:#1a1a2e">${s.name}</span>
+      <span style="font-size:12px;background:#f1f3f7;color:#4a5568;font-weight:600;border-radius:4px;padding:3px 9px">${s.grade}</span>
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:4px;margin-top:16px">
+      <span style="font-size:52px;font-weight:700;line-height:1;letter-spacing:-2px;color:#1a1a2e">${r.actualScore||'-'}</span>
+      <span style="font-size:14px;color:#4a5568;font-weight:600;margin-bottom:8px;margin-left:2px">점</span>
+      ${isPerfect?'<span style="margin-left:10px;margin-bottom:8px;background:#fff7e6;color:#b45309;border:1px solid #fcd48a;border-radius:7px;font-size:12px;font-weight:700;padding:5px 13px">만점</span>':''}
+    </div>
+  </div>
+  ${answers.length ? `
+  <div style="padding:20px 28px 0">
+    <div style="font-size:11px;color:#4a5568;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px">문항별 유형 분석 — ${totalQ}문항 ${wrongCount===0?'전체 정답':'정답 '+correctCount+' / 오답 '+wrongCount}</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">${qGrid}</div>
+  </div>` : ''}
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 28px 0">
+    <div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:14px 12px;text-align:center">
+      <div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:5px">총 문항</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a2e">${totalQ}문항</div>
+    </div>
+    <div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:14px 12px;text-align:center">
+      <div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:5px">정답 / 오답</div>
+      <div style="font-size:16px;font-weight:700;color:#2f855a">${correctCount} / ${wrongCount}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:14px 12px;text-align:center">
+      <div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:5px">준비 기간</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a2e">${fbPrepDays||r.fbPrepDays||'-'}</div>
+    </div>
+  </div>
+  <div style="height:1px;background:#edf0f5;margin:20px 28px 0"></div>
+  <div style="padding:16px 28px 0">
+    <div style="font-size:11px;color:#4a5568;font-weight:700;letter-spacing:1px;margin-bottom:12px">학생 피드백</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 28px">
+    ${fbEmotion?`<div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:13px 14px"><div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:6px">시험 당일</div><div style="font-size:14px;color:#1a1a2e;font-weight:600;line-height:1.5">${fbEmotion}</div></div>`:''}
+    ${fbSelf?`<div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:13px 14px"><div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:6px">스스로에게</div><div style="font-size:14px;color:#1a1a2e;font-weight:600;line-height:1.5">${fbSelf}</div></div>`:''}
+    ${fbTeacher?`<div style="background:#fff;border:1px solid #edf0f5;border-radius:10px;padding:13px 14px"><div style="font-size:11px;color:#4a5568;font-weight:700;margin-bottom:6px">선생님께</div><div style="font-size:14px;color:#1a1a2e;font-weight:600;line-height:1.5">${fbTeacher}</div></div>`:''}
+    ${r.goalScore?`<div style="background:#eef4ff;border:1px solid #c8d9f7;border-radius:10px;padding:13px 14px"><div style="font-size:11px;color:#3b6fd4;font-weight:700;margin-bottom:6px">다음 목표</div><div style="font-size:15px;color:#3b6fd4;font-weight:700">${r.goalScore}점</div></div>`:''}
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 28px 0">
+    <span style="font-size:12px;color:#6b7280;font-weight:600">헤일리올라 영어학원</span>
+    <span style="font-size:12px;color:#6b7280;font-weight:600">TEST FEEDBACK</span>
+  </div>`;
+
+  document.body.appendChild(card);
+  const btn = document.querySelector('[onclick="saveStudentImage(\''+userId+'\')"]');
+  if(btn) { btn.textContent = '⏳ 이미지 생성 중...'; btn.disabled = true; }
+
+  try {
+    const canvas = await html2canvas(card, { scale:2, backgroundColor:'#f8f9fb', useCORS:true, logging:false });
+    const link = document.createElement('a');
+    link.download = `${s.name}_${r.examType}_피드백.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    if(btn) { btn.textContent = '✅ 저장됐어요!'; setTimeout(()=>{ btn.textContent='🖼️ 이미지 저장'; btn.disabled=false; }, 2000); }
+  } catch(e) {
+    alert('이미지 저장에 실패했어요. 다시 시도해주세요.');
+    if(btn) { btn.textContent='🖼️ 이미지 저장'; btn.disabled=false; }
+  } finally {
+    document.body.removeChild(card);
+  }
 }
 
 async function buildSchoolsTab(body) {
